@@ -6,15 +6,7 @@ module.exports = {
         "./src/**/*.{js,ts,jsx,tsx}",
     ],
     theme: {
-        extend: {
-            fontFamily: {
-                mont: ['Montserrat', 'ui-sans-serif', 'system-ui'],
-                syne: ['Syne', 'ui-sans-serif', 'system-ui'],
-                oswald: ['Oswald', 'ui-sans-serif', 'system-ui'],
-                dastin: ['Dastin', 'ui-sans-serif', 'system-ui'],
-                cav: ['CaviarDreams', 'ui-sans-serif', 'system-ui'],
-            },
-        },
+        extend: {},
     },
     plugins: [],
 };
