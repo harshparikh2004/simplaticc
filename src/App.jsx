@@ -1,13 +1,18 @@
 import React from 'react'
 import './index.css'
 import Navbar from './components/Navbar'
+import Footer from './components/Footer'
+import Home from './pages/Home'
 
 function App() {
   return (
     <>
-      <div className='relative w-full h-screen bg-white'>
-        <div className='absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-[300px] h-[300px] rounded-full bg-[#246a73] blur-[130px]'></div>
+      <div className='relative w-full'>
+        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  w-[500px] h-[500px] rounded-full bg-[#246a73]/70 blur-[130px] -z-20'></div>
+        <div className='absolute top-1/2 left-2/3 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-[#dba159]/70 blur-[100px] -z-10'></div>
         <Navbar />
+        <Home />
+        <Footer />
       </div>
     </>
   )
