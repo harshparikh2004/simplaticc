@@ -20,7 +20,7 @@ function Navbar() {
                 </ul>
             </div>
             <div className='w-full flex items-center justify-end gap-2' id='login'>
-                <button className='border border-black cursor-pointer md:flex w-[100px] h-10 gap-1 items-center hover:rounded-xl justify-center group bg-[#131313] rounded-lg text-white duration-150 ease-in'>Login <GoArrowUpRight size={22} className='group-hover:ml-1 group-hover:mb-1 transition-all' /></button>
+                <Link to={'/login'} className='border border-black cursor-pointer md:flex w-[100px] h-10 gap-1 items-center hover:rounded-xl justify-center group bg-[#303030] rounded-lg text-white duration-150 ease-in'>Login <GoArrowUpRight size={22} className='group-hover:ml-1 group-hover:mb-1 transition-all' /></Link>
             </div>
         </div>
     )

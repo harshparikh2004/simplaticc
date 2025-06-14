@@ -8,11 +8,12 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                mont: ['Montserrat', 'ui-sans-serif', 'system-ui'],
-                syne: ['Syne', 'ui-sans-serif', 'system-ui'],
-                oswald: ['Oswald', 'ui-sans-serif', 'system-ui'],
-                dastin: ['Dastin', 'ui-sans-serif', 'system-ui'],
-                cav: ['CaviarDreams', 'ui-sans-serif', 'system-ui'],
+                mont: ['Montserrat', ...defaultTheme.fontFamily.sans],
+                syne: ['Syne', ...defaultTheme.fontFamily.sans],
+                oswald: ['Oswald', ...defaultTheme.fontFamily.sans],
+                caviar: ['CaviarDreams', ...defaultTheme.fontFamily.sans],
+                dastin: ['Dastin', ...defaultTheme.fontFamily.sans],
+                adam: ['Adam', ...defaultTheme.fontFamily.sans],
             },
         },
     },

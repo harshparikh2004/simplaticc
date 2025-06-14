@@ -1,22 +1,25 @@
 import React from 'react'
 import hero from '../assets/Hero.png'
+import { GoArrowUpRight } from 'react-icons/go'
 import '../index.css'
+import { Link } from 'react-router-dom'
 
 function Home() {
     return (
-        <div className='lg:max-w-[1340px] mt-32 w-full mx-auto flex'>
+        <div className='lg:max-w-[1340px] mt-28 w-full mx-auto flex'>
             <div id='text' className='w-full flex flex-col justify-center px-8 leading-8'>
-                <h1 className='text-lg md:text-3xl lg:text-5xl font-medium' style={{ fontFamily: 'CaviarDreams' }}>Welcome to <span className='lg:text-7xl text-amber-500 font-mont' style={{ fontFamily: 'Oswald' }}>Simplatic !</span></h1>
+                <h1 className='text-lg md:text-3xl lg:text-5xl font-medium' style={{ fontFamily: 'Syne' }}>Welcome to <span className='lg:text-7xl text-amber-500 font-extrabold' style={{ fontFamily: 'adam' }}>Simplatic!</span></h1>
                 <br />
                 <div className='flex flex-col gap-2'>
                     <p className='text-base lg:text-xl tracking-wide' style={{ fontFamily: 'Quicksand' }}>Your Ultimate Student Companion for Effortless SRS Generation. Simplatic transforms the tedious process of creating Software Requirement Specification (SRS) documents into a seamless, automated experience.</p>
                 </div>
+                <Link to={'/login'} className='border w-1/4 mt-4 bg-[#303030] cursor-pointer text-white gap-2 flex items-center justify-center p-2 rounded-lg hover:rounded-xl transition-all duration-150 ease-in group'>Get Started <GoArrowUpRight size={18} className=' group-hover:ml-1 group-hover:mb-1 transition-all'/></Link>
             </div>
             <div id='image' className='w-full'>
-                <img src={hero} alt="Hero image" className='w-[90%] pointer-events-none' />
+                <img src={hero} alt="Hero image" className='w-[90%]' />
             </div>
         </div>
     )
 }
 
-export default Home;
+export default Home 
