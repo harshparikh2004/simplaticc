@@ -1,1 +1,36 @@
 @import "tailwindcss";
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/src/assets/fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Syne';
+    src: url('/src/assets/fonts/Syne/Syne-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Oswald';
+    src: url('/src/assets/fonts/Oswald/Oswald-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'CaviarDreams';
+    src: url('/src/assets/fonts/caviar_dreams/CaviarDreams.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Dastin';
+    src: url('/src/assets/fonts/dastin/Dastin.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Adam';
+    src: url('/src/assets/fonts/adam/Adam-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    src: url('/src/assets/fonts/quicksand/Quicksand_Book.otf') format('truetype');
+}
