@@ -21,7 +21,7 @@ function Login() {
             <div className='absolute  md:block -z-20 top-[120px] md:top-[240px] left-[190px] md:left-[450px] w-[90px] h-[90px] md:w-[200px] md:h-[200px] blur-xl rounded-full md:blur-3xl bg-[#1d4483] animate-blob-3'></div>
 
             <div className='flex items-center justify-center md:justify-between md:w-[80%] border border-gray-300/70 rounded-md mx-auto'>
-                <div className='flex flex-col px-8 py-8 items-center justify-center gap-6 w-full md:h-[69vh] bg-white/35 md:rounded-tr-4xl md:rounded-br-4xl backdrop-blur-lg transition-all duration-300 ease-in-out'>
+                <div className='flex flex-col px-8 py-8 items-center justify-center gap-6 w-full md:h-[71vh] bg-white/35 md:rounded-tr-4xl md:rounded-br-4xl backdrop-blur-lg transition-all duration-300 ease-in-out'>
                     <h1 className='text-3xl md:text-4xl lg:text-5xl font-bold' style={{ fontFamily: 'Syne' }}>
                         {isSignup ? 'Signup' : 'Signin'}
                     </h1>
