@@ -12,7 +12,7 @@ function Navbar() {
 
     return (
         <nav className='fixed z-50 w-full top-4 px-4'>
-            <div className='max-w-[1100px] mx-auto rounded-lg border border-gray-200/50 bg-white/20 backdrop-blur-lg shadow-lg flex items-center justify-between px-6 py-3'>
+            <div className='max-w-[1100px] mx-auto rounded-lg border border-gray-300/30 bg-white/40 backdrop-blur-lg shadow-lg flex items-center justify-between px-6 py-3'>
 
                 {/* Logo */}
                 <div>
@@ -22,17 +22,17 @@ function Navbar() {
                 </div>
 
                 {/* Desktop Links */}
-                <div className='hidden md:flex items-center justify-center gap-6 text-sm font-medium'>
-                    <Link to='/' className='relative cursor-pointer after:rounded-full after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-[2px] after:bg-black after:transition-all after:duration-300 hover:after:w-full'>
+                <div className='hidden md:flex items-center justify-center gap-6 text-sm font-semibold' style={{fontFamily:'Quicksand'}}>
+                    <Link to='/' className='relative cursor-pointer after:rounded-full after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-[1px] after:bg-black after:transition-all after:duration-300 hover:after:w-full'>
                         Home
                     </Link>
-                    <Link to='/about' className='relative cursor-pointer after:rounded-full after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-[2px] after:bg-black after:transition-all after:duration-300 hover:after:w-full'>
+                    <Link to='/about' className='relative cursor-pointer after:rounded-full after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-[1px] after:bg-black after:transition-all after:duration-300 hover:after:w-full'>
                         About
                     </Link>
-                    <Link to='/services' className='relative cursor-pointer after:rounded-full after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-[2px] after:bg-black after:transition-all after:duration-300 hover:after:w-full'>
+                    <Link to='/services' className='relative cursor-pointer after:rounded-full after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-[1px] after:bg-black after:transition-all after:duration-300 hover:after:w-full'>
                         Services
                     </Link>
-                    <Link to='/contact' className='relative cursor-pointer after:rounded-full after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-[2px] after:bg-black after:transition-all after:duration-300 hover:after:w-full'>
+                    <Link to='/contact' className='relative cursor-pointer after:rounded-full after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-[1px] after:bg-black after:transition-all after:duration-300 hover:after:w-full'>
                         Contact
                     </Link>
                 </div>
@@ -41,7 +41,7 @@ function Navbar() {
                 <div className='hidden md:flex items-center justify-end'>
                     <Link
                         to='/login'
-                        className='border border-black cursor-pointer w-[100px] h-10 gap-1 items-center hover:rounded-xl justify-center group bg-[#303030] rounded-lg text-white duration-150 ease-in flex'
+                        className='border border-[#303030] cursor-pointer w-[100px] h-10 gap-1 items-center hover:rounded-xl justify-center group bg-[#303030] rounded-lg text-white duration-150 ease-in flex'
                     >
                         Login
                         <GoArrowUpRight size={20} className='group-hover:ml-1 group-hover:mb-1 transition-all' />

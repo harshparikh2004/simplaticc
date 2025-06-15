@@ -15,7 +15,7 @@ function Home() {
                 </div>
                 <Link to={'/login'} className='md:w-1/2 lg:w-1/3 mt-4 bg-[#303030] cursor-pointer text-white gap-2 flex items-center justify-center p-2 rounded-lg hover:rounded-xl transition-all duration-150 ease-in group'>Get Started <GoArrowUpRight size={18} className=' group-hover:ml-1 group-hover:mb-1 transition-all'/></Link>
             </div>
-            <div id='image' className='hidden md:block w-full'>
+            <div id='image' className='hidden md:block w-full pointer-events-none'>
                 <img src={hero} alt="Hero image" className='w-[90%]' />
             </div>
         </div>
