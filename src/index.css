@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html{
+    background-color: rgba(229, 231, 235, 0.9);
+}
+
 @font-face {
     font-family: 'Montserrat';
     src: url('/src/assets/fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');

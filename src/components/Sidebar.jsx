@@ -1,0 +1,59 @@
+import React, { useState } from 'react';
+import profile from '../assets/profile.jpg';
+import { Link } from 'react-router-dom';
+import { HiOutlineMenuAlt3, HiX } from 'react-icons/hi';
+
+function Sidebar() {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <>
+            {/* Hamburger icon (only for small screens) */}
+            <div className='fixed top-6 left-4 z-30 md:hidden'>
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className='text-black mt-18 bg-gray-200 p-2 rounded-lg shadow-md'
+                >
+                    {isOpen ? <HiX size={24} /> : <HiOutlineMenuAlt3 size={24} />}
+                </button>
+            </div>
+
+            {/* Sidebar container */}
+            <div
+                className={`fixed top-0 left-0 z-20 h-full w-[75%] sm:w-[60%] md:w-[20%] px-8 py-6 bg-white/20 backdrop-blur-3xl rounded-r-2xl border border-gray-400/30 border-b-0 flex flex-col justify-between items-center gap-4 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:sticky md:top-0 md:h-screen md:flex`}>
+                <div className='flex flex-col w-full gap-8 items-center pt-28 md:pt-24'>
+                    <div id='PP'
+                        className='overflow-hidden rounded-2xl border border-gray-300/20 shadow-xl shadow-black/30 w-[200px] h-[200px]'>
+                        <img src={profile} alt='Profile' />
+                    </div>
+                    <div className='w-full'>
+                        <ul
+                            className='flex flex-col items-start justify-between font-semibold gap-4 text-black'
+                            style={{ fontFamily: 'Quicksand' }}
+                        >
+                            <li className='w-full rounded-md hover:bg-[#70abaf]/60 transition ease-in duration-150 p-2'>
+                                <Link to='/'>Profile</Link>
+                            </li>
+                            <li className='w-full rounded-md hover:bg-[#70abaf]/60 transition ease-in duration-150 p-2'>
+                                <Link to='/'>Dashboard</Link>
+                            </li>
+                            <li className='w-full rounded-md hover:bg-[#70abaf]/60 transition ease-in duration-150 p-2'>
+                                <Link to='/'>My Projects</Link>
+                            </li>
+                            <li className='w-full rounded-md hover:bg-[#70abaf]/60 transition ease-in duration-150 p-2'>
+                                <Link to='/'>Settings</Link>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div className='w-full'>
+                    <button className='w-full bg-red-500 rounded-md hover:shadow-sm py-2 border border-gray-200/40 hover:shadow-red-400 hover:rounded-xl text-white transition-all cursor-pointer ease-in duration-150'>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </>
+    );
+}
+
+export default Sidebar;

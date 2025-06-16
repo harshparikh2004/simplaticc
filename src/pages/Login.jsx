@@ -14,7 +14,7 @@ function Login() {
     };
 
     return (
-        <div className='relative mx-auto flex items-center justify-center mt-32 md:px-16 md:py-8'>
+        <div className='relative mx-auto flex items-center justify-center mt-32 md:px-16 md:py-8 '>
             {/* Background blobs */}
             <div className='absolute  md:block -z-20 top-1/5 left-1/3 md:left-1/4 w-[150px] h-[150px] md:w-[400px] md:h-[400px] blur-xl rounded-full md:blur-3xl bg-[#dba159] animate-blob-1'></div>
             <div className='absolute  md:block -z-20 top-[100px] md:top-[200px] left-[130px] md:left-[300px] w-[120px] h-[120px] md:w-[300px] md:h-[300px] blur-xl rounded-full md:blur-3xl bg-[#032224] animate-blob-2'></div>
