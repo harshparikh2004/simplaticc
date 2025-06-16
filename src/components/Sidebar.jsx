@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import profile from '../assets/profile.jpg';
 import { Link } from 'react-router-dom';
-import { HiOutlineMenuAlt3, HiX } from 'react-icons/hi';
+import { HiArrowRight, HiX } from 'react-icons/hi';
 
 function Sidebar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -12,9 +12,9 @@ function Sidebar() {
             <div className='fixed top-6 left-4 z-30 md:hidden'>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className='text-black mt-18 bg-gray-200 p-2 rounded-lg shadow-md'
+                    className='text-black mt-13 bg-gray-200 p-2 rounded-lg shadow-md'
                 >
-                    {isOpen ? <HiX size={24} /> : <HiOutlineMenuAlt3 size={24} />}
+                    {isOpen ? <HiX size={24} /> : <HiArrowRight size={24} />}
                 </button>
             </div>
 
@@ -31,23 +31,23 @@ function Sidebar() {
                             className='flex flex-col items-start justify-between font-semibold gap-4 text-black'
                             style={{ fontFamily: 'Quicksand' }}
                         >
-                            <li className='w-full rounded-md hover:bg-[#70abaf]/60 transition ease-in duration-150 p-2'>
+                            <li className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
                                 <Link to='/'>Profile</Link>
                             </li>
-                            <li className='w-full rounded-md hover:bg-[#70abaf]/60 transition ease-in duration-150 p-2'>
+                            <li className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
                                 <Link to='/'>Dashboard</Link>
                             </li>
-                            <li className='w-full rounded-md hover:bg-[#70abaf]/60 transition ease-in duration-150 p-2'>
+                            <li className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
                                 <Link to='/'>My Projects</Link>
                             </li>
-                            <li className='w-full rounded-md hover:bg-[#70abaf]/60 transition ease-in duration-150 p-2'>
+                            <li className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
                                 <Link to='/'>Settings</Link>
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div className='w-full'>
-                    <button className='w-full bg-red-500 rounded-md hover:shadow-sm py-2 border border-gray-200/40 hover:shadow-red-400 hover:rounded-xl text-white transition-all cursor-pointer ease-in duration-150'>
+                    <button className='w-full bg-red-500 rounded-md hover:shadow-sm py-2 border border-white/60 hover:shadow-red-400 hover:rounded-xl text-white transition-all cursor-pointer ease-in duration-150'>
                         Logout
                     </button>
                 </div>
