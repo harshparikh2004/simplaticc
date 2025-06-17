@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 import bg from '../assets/Login.png';
 import { GoEye, GoEyeClosed } from 'react-icons/go';
+import { auth } from '../firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
+    const navigate = useNavigate();
     const [isSignup, setIsSignup] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [name, setName] = useState('');
 
     const toggleMode = () => {
         setIsSignup(!isSignup);
@@ -13,9 +22,31 @@ function Login() {
         setShowConfirmPassword(false);
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (isSignup && password !== confirmPassword) {
+            alert("Passwords do not match.");
+            return;
+        }
+
+        try {
+            if (isSignup) {
+                await createUserWithEmailAndPassword(auth, email, password);
+                alert("Signup successful");
+            } else {
+                await signInWithEmailAndPassword(auth, email, password);
+                alert("Login successful");
+            }
+            navigate('/'); // Redirect after success
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+
+
     return (
         <div className='relative mx-auto flex items-center justify-center mt-32 md:px-16 md:py-8 '>
-            {/* Background blobs */}
             <div className='absolute  md:block -z-20 top-1/5 left-1/3 md:left-1/4 w-[150px] h-[150px] md:w-[400px] md:h-[400px] blur-xl rounded-full md:blur-3xl bg-[#dba159] animate-blob-1'></div>
             <div className='absolute  md:block -z-20 top-[100px] md:top-[200px] left-[130px] md:left-[300px] w-[120px] h-[120px] md:w-[300px] md:h-[300px] blur-xl rounded-full md:blur-3xl bg-[#032224] animate-blob-2'></div>
             <div className='absolute  md:block -z-20 top-[120px] md:top-[240px] left-[190px] md:left-[450px] w-[90px] h-[90px] md:w-[200px] md:h-[200px] blur-xl rounded-full md:blur-3xl bg-[#1d4483] animate-blob-3'></div>
@@ -26,8 +57,7 @@ function Login() {
                         {isSignup ? 'Signup' : 'Signin'}
                     </h1>
 
-                    <form className='w-full flex flex-col gap-3'>
-                        {/* Name */}
+                    <form className='w-full flex flex-col gap-3' onSubmit={handleSubmit}>
                         <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isSignup ? 'max-h-28 opacity-100' : 'max-h-0 opacity-0'} flex flex-col gap-1`}>
                             <label htmlFor="name" className='font-medium' style={{ fontFamily: 'Quicksand' }}>Name</label>
                             <input
@@ -36,10 +66,11 @@ function Login() {
                                 className='bg-white/40 border font-semibold border-black/30 px-2 outline-none py-1 rounded-sm'
                                 style={{ fontFamily: 'Quicksand' }}
                                 placeholder='John Doe'
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
                             />
                         </div>
 
-                        {/* Email */}
                         <div className='flex flex-col gap-1'>
                             <label htmlFor="email" className='font-medium' style={{ fontFamily: 'Quicksand' }}>Email</label>
                             <input
@@ -48,10 +79,11 @@ function Login() {
                                 className='bg-white/40 border font-semibold border-black/30 px-2 outline-none py-1 rounded-sm'
                                 style={{ fontFamily: 'Quicksand' }}
                                 placeholder='sample@email.com'
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
 
-                        {/* Password */}
                         <div className='flex flex-col gap-1'>
                             <label htmlFor="password" className='font-medium' style={{ fontFamily: 'Quicksand' }}>Password</label>
                             <div className='relative'>
@@ -61,6 +93,8 @@ function Login() {
                                     className='w-full bg-white/40 border font-semibold border-black/30 px-2 outline-none py-1 rounded-sm'
                                     style={{ fontFamily: 'Quicksand' }}
                                     placeholder='••••••••'
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                 />
                                 {showPassword ? (
                                     <GoEyeClosed
@@ -76,7 +110,6 @@ function Login() {
                             </div>
                         </div>
 
-                        {/* Confirm Password */}
                         <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isSignup ? 'max-h-28 opacity-100' : 'max-h-0 opacity-0'} flex flex-col gap-1`}>
                             <label htmlFor="confirm-password" className='font-medium' style={{ fontFamily: 'Quicksand' }}>Confirm Password</label>
                             <div className='relative'>
@@ -86,6 +119,8 @@ function Login() {
                                     className='w-full bg-white/40 border font-semibold border-black/30 px-2 outline-none py-1 rounded-sm'
                                     style={{ fontFamily: 'Quicksand' }}
                                     placeholder='••••••••'
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
                                 />
                                 {showConfirmPassword ? (
                                     <GoEyeClosed
@@ -101,7 +136,6 @@ function Login() {
                             </div>
                         </div>
 
-                        {/* Submit Button */}
                         <div className={`${isSignup ? 'mt-4' : 'mt-2'}`}>
                             <button
                                 type='submit'
@@ -112,7 +146,6 @@ function Login() {
                             </button>
                         </div>
 
-                        {/* Switch Mode */}
                         <div className='flex items-center justify-start gap-2'>
                             <p style={{ fontFamily: 'Quicksand' }}>
                                 {isSignup ? 'Already have an account?' : "Don't have an account?"}
@@ -129,7 +162,6 @@ function Login() {
                     </form>
                 </div>
 
-                {/* Image Section */}
                 <div className='w-full hidden md:block'>
                     <img src={bg} alt="Login Section" className='w-full object-contain' />
                 </div>

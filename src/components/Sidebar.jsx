@@ -1,10 +1,24 @@
 import React, { useState } from 'react';
 import profile from '../assets/profile.jpg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { HiArrowRight, HiX } from 'react-icons/hi';
+import { auth } from '../firebase';
+import { signOut } from 'firebase/auth';
+
 
 function Sidebar() {
     const [isOpen, setIsOpen] = useState(false);
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            navigate('/login');
+        } catch (error) {
+            console.error("Logout error:", error);
+            alert("Failed to logout");
+        }
+    };
 
     return (
         <>
@@ -22,8 +36,10 @@ function Sidebar() {
             <div
                 className={`fixed top-0 left-0 z-20 h-full w-[75%] sm:w-[60%] md:w-[20%] px-8 py-6 bg-white/20 backdrop-blur-3xl rounded-r-2xl border border-gray-400/30 border-b-0 flex flex-col justify-between items-center gap-4 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:sticky md:top-0 md:h-screen md:flex`}>
                 <div className='flex flex-col w-full gap-8 items-center pt-28 md:pt-24'>
-                    <div id='PP'
-                        className='overflow-hidden rounded-2xl border border-gray-300/20 shadow-xl shadow-black/30 w-[200px] h-[200px]'>
+                    <div
+                        id='PP'
+                        className='overflow-hidden rounded-2xl border border-gray-300/20 shadow-xl shadow-black/30 w-[200px] h-[200px]'
+                    >
                         <img src={profile} alt='Profile' />
                     </div>
                     <div className='w-full'>
@@ -32,22 +48,25 @@ function Sidebar() {
                             style={{ fontFamily: 'Quicksand' }}
                         >
                             <li className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
-                                <Link to='/'>Profile</Link>
+                                <Link to='/profile'>Profile</Link>
                             </li>
                             <li className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
-                                <Link to='/'>Dashboard</Link>
+                                <Link to='/dashboard'>Dashboard</Link>
                             </li>
                             <li className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
-                                <Link to='/'>My Projects</Link>
+                                <Link to='/projects'>My Projects</Link>
                             </li>
                             <li className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
-                                <Link to='/'>Settings</Link>
+                                <Link to='/settings'>Settings</Link>
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div className='w-full'>
-                    <button className='w-full bg-red-500 rounded-md hover:shadow-sm py-2 border border-white/60 hover:shadow-red-400 hover:rounded-xl text-white transition-all cursor-pointer ease-in duration-150'>
+                    <button
+                        onClick={handleLogout}
+                        className='w-full bg-red-500 rounded-md hover:shadow-sm py-2 border border-white/60 hover:shadow-red-400 hover:rounded-xl text-white transition-all cursor-pointer ease-in duration-150'
+                    >
                         Logout
                     </button>
                 </div>
@@ -57,3 +76,4 @@ function Sidebar() {
 }
 
 export default Sidebar;
+
