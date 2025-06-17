@@ -29,8 +29,8 @@ function RecentActivity() {
     };
 
     return (
-        <div className='border-2 mt-8 md:mt-0 h-[82vh] md:h-[87vh] border-black/15 flex flex-col rounded-md w-full'>
-            <div className='flex border-b border-gray-400/70 bg-white/50 p-4'>
+        <div className=' mt-8 md:mt-0 h-[82vh] md:h-[87vh]  flex flex-col rounded-md w-full'>
+            <div className='flex bg-white/50 p-4'>
                 <div className='w-full flex flex-col items-start'>
                     <h1 className='font-bold text-xl md:text-3xl' style={{ fontFamily: 'Syne' }}>Recent Activity</h1>
                     <p className='font-semibold text-gray-600' style={{ fontFamily: 'Quicksand' }}>Latest updates on your projects</p>

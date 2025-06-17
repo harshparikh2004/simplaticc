@@ -81,7 +81,7 @@ function NewProject() {
     };
 
     return (
-        <div className='border w-full h-screen px-8 py-8 flex items-center justify-center'>
+        <div className=' w-full h-screen px-8 py-8 flex items-center justify-center'>
             <form
                 onSubmit={(e) => e.preventDefault()}
                 className='w-full h-full max-w-2xl flex flex-col gap-8 justify-center items-center'
