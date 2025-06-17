@@ -3,6 +3,7 @@ import profile from '../assets/profile.jpg';
 import { Link, useNavigate } from 'react-router-dom';
 import { HiArrowRight, HiX } from 'react-icons/hi';
 import { auth } from '../firebase';
+import toast, { Toaster } from 'react-hot-toast';
 import { signOut } from 'firebase/auth';
 
 
@@ -13,10 +14,19 @@ function Sidebar() {
     const handleLogout = async () => {
         try {
             await signOut(auth);
-            navigate('/login');
+            toast.success('Logged out.', {
+                position: "top-left",
+                duration: 1300,
+            });
+            setTimeout(() => {
+                navigate('/login');
+            }, 1700);
         } catch (error) {
             console.error("Logout error:", error);
-            alert("Failed to logout");
+            toast.error('Failed to logout.', {
+                position: "top-left",
+                duration: 1300,
+            });
         }
     };
 
@@ -70,6 +80,7 @@ function Sidebar() {
                         Logout
                     </button>
                 </div>
+                <Toaster/>
             </div>
         </>
     );

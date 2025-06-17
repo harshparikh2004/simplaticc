@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 import { auth } from '../firebase';
 
 const steps = [
@@ -50,11 +51,19 @@ function NewProject() {
             };
 
             await addDoc(collection(db, 'projects'), structuredData);
-            alert('Project saved successfully!');
-            navigate('/dashboard');
+            toast.success('Project Saved Successfully.', {
+                position: "top-center",
+                duration: 1300,
+            });
+            setTimeout(() => {
+                navigate('/profile');
+            }, 1700);
         } catch (error) {
             console.error("Error saving project:", error);
-            alert("Failed to save project.");
+            toast.error('Error saving project.', {
+                position: "top-center",
+                duration: 1300,
+            });
         }
     };
 
@@ -128,6 +137,7 @@ function NewProject() {
                     )}
                 </div>
             </form>
+            <Toaster />
         </div>
     );
 }

@@ -50,8 +50,7 @@ function Navbar() {
                 {/* Desktop Auth */}
                 <div className='hidden md:flex items-center justify-end'>
                     {isLoggedIn ? (
-                        <button onClick={handleProfileClick} className='text-2xl text-black hover:text-[#032224] transition'>
-                            <FaUserCircle />
+                        <button onClick={handleProfileClick} className='border border-[#303030] cursor-pointer w-[100px] h-10 gap-1 items-center hover:rounded-xl justify-center group bg-[#303030] rounded-lg text-white duration-150 ease-in flex'>Profile
                         </button>
                     ) : (
                         <Link
@@ -79,9 +78,8 @@ function Navbar() {
                     <li><Link to='/contact' onClick={closeMenu} className='block w-full text-center py-1'>Contact</Link></li>
                     <li>
                         {isLoggedIn ? (
-                            <button onClick={handleProfileClick} className='text-xl text-black'>
-                                <FaUserCircle />
-                            </button>
+                            <button onClick={handleProfileClick} className='block w-full text-center py-1'>Profile
+                        </button>
                         ) : (
                             <Link
                                 to='/login'

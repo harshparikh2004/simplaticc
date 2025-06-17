@@ -3,6 +3,7 @@ import bg from '../assets/Login.png';
 import { GoEye, GoEyeClosed } from 'react-icons/go';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -33,14 +34,25 @@ function Login() {
         try {
             if (isSignup) {
                 await createUserWithEmailAndPassword(auth, email, password);
-                alert("Signup successful");
+                toast.success('Signup Successful.', {
+                    position: "top-center",
+                    duration: 1300,
+                });
             } else {
                 await signInWithEmailAndPassword(auth, email, password);
-                alert("Login successful");
+                toast.success('Signin Successful.', {
+                    position: "top-center",
+                    duration: 1300,
+                });
             }
-            navigate('/'); // Redirect after success
+            setTimeout(() => {
+                navigate('/');
+            }, 1700); // Redirect after success
         } catch (error) {
-            alert(error.message);
+            toast.error('Failed to signup/signin', {
+                position: "top-center",
+                duration: 1300,
+            });
         }
     };
 
@@ -166,6 +178,7 @@ function Login() {
                     <img src={bg} alt="Login Section" className='w-full object-contain' />
                 </div>
             </div>
+            <Toaster />
         </div>
     );
 }
