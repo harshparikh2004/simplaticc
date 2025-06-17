@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import bg from '../assets/Login.png';
 import { GoEye, GoEyeClosed } from 'react-icons/go';
-import { auth } from '../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth, googleProvider } from '../firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-
 
 function Login() {
     const navigate = useNavigate();
@@ -27,7 +26,10 @@ function Login() {
         e.preventDefault();
 
         if (isSignup && password !== confirmPassword) {
-            alert("Passwords do not match.");
+            toast.error("Passwords do not match.", {
+                position: "top-center",
+                duration: 1300,
+            });
             return;
         }
 
@@ -47,7 +49,7 @@ function Login() {
             }
             setTimeout(() => {
                 navigate('/');
-            }, 1700); // Redirect after success
+            }, 1700);
         } catch (error) {
             toast.error('Failed to signup/signin', {
                 position: "top-center",
@@ -56,6 +58,24 @@ function Login() {
         }
     };
 
+    const handleGoogleLogin = async () => {
+        try {
+            await signInWithPopup(auth, googleProvider);
+            toast.success('Google login successful.', {
+                position: "top-center",
+                duration: 1300,
+            });
+            setTimeout(() => {
+                navigate('/');
+            }, 1700);
+        } catch (err) {
+            console.error("Google login error:", err);
+            toast.error('Google login failed.', {
+                position: "top-center",
+                duration: 1300,
+            });
+        }
+    };
 
     return (
         <div className='relative mx-auto flex items-center justify-center mt-32 md:px-16 md:py-8 '>
@@ -157,6 +177,19 @@ function Login() {
                                 {isSignup ? 'Signup' : 'Signin'}
                             </button>
                         </div>
+
+                        <button
+                            type="button"
+                            onClick={handleGoogleLogin}
+                            className="w-full flex items-center justify-center gap-3 py-2 px-4 bg-white border border-gray-300 font-semibold text-gray-700 rounded-md shadow-sm hover:shadow-md transition-all hover:rounded-xl  duration-150 ease-in cursor-pointer tracking-wider"
+                        >
+                            <img
+                                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                                alt="Google"
+                                className="w-5 h-5"
+                            />
+                            <span style={{ fontFamily: 'Syne' }}>{isSignup ? 'Sign up with Google' : 'Sign in with Google'}</span>
+                        </button>
 
                         <div className='flex items-center justify-start gap-2'>
                             <p style={{ fontFamily: 'Quicksand' }}>
