@@ -7,6 +7,7 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
 import NewProject from './pages/NewProject'
+import TestFirebase from './pages/TestFirebase'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path='/login' element={<Login/>}/>
             <Route path='/profile' element={<Profile/>}/>
             <Route path='/new-project' element={<NewProject/>}/>
+            <Route path="/test-firebase" element={<TestFirebase />} />
           </Routes>
           <Footer />
         </div>
