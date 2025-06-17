@@ -20,7 +20,7 @@ export const projects = [
     {
         id: 3,
         title: "College ERP Integration",
-        status: "Failed",
+        status: "",
         date: "4/15/2024",
     },
     {

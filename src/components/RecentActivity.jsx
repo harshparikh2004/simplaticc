@@ -38,7 +38,7 @@ function RecentActivity() {
                 <div className='w-full flex items-center justify-end'>
                     <Link
                         style={{ fontFamily: 'Quicksand' }}
-                        to='/'
+                        to='/new-project'
                         className='border border-[#303030] cursor-pointer py-2 px-4 gap-1 items-center hover:rounded-xl justify-center group bg-[#303030] rounded-sm text-white duration-150 ease-in flex'
                     >
                         Create Project
