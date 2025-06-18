@@ -29,8 +29,8 @@ function RecentActivity() {
     };
 
     return (
-        <div className=' mt-8 md:mt-0 h-[82vh] md:h-[87vh]  flex flex-col rounded-md w-full'>
-            <div className='flex bg-white/50 p-4'>
+        <div className=' mt-8 md:mt-24 h-[82vh] md:h-[87vh]  flex flex-col rounded-md w-full'>
+            <div className='flex  p-4'>
                 <div className='w-full flex flex-col items-start'>
                     <h1 className='font-bold text-xl md:text-3xl' style={{ fontFamily: 'Syne' }}>Recent Activity</h1>
                     <p className='font-semibold text-gray-600' style={{ fontFamily: 'Quicksand' }}>Latest updates on your projects</p>
@@ -45,7 +45,7 @@ function RecentActivity() {
                     </Link>
                 </div>
             </div>
-            <div className='flex flex-col cursor-pointer gap-y-2 justify-center px-4 pb-4 bg-white/50 max-h-fit overflow-y-auto pt-132 md:pt-76 scrollbar-thin'>
+            <div className='flex flex-col cursor-pointer gap-y-2 justify-center px-4 pb-4 max-h-fit overflow-y-auto pt-132 md:pt-76 scrollbar-thin'>
                 {projects.map((project) => {
                     const { dot, pill } = getStatusColor(project.status);
                     return (

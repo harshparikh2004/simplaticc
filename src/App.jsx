@@ -8,6 +8,7 @@ import Login from './pages/Login'
 import Profile from './pages/Profile'
 import NewProject from './pages/NewProject'
 import TestFirebase from './pages/TestFirebase'
+import Projects from './pages/Projects'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path='/profile' element={<Profile/>}/>
             <Route path='/new-project' element={<NewProject/>}/>
             <Route path="/test-firebase" element={<TestFirebase />} />
+            <Route path="/projects" element={<Projects />} />
           </Routes>
           <Footer />
         </div>

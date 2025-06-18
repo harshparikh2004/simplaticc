@@ -57,18 +57,15 @@ function Sidebar() {
                             className='flex flex-col items-start justify-between font-semibold gap-4 text-black'
                             style={{ fontFamily: 'Quicksand' }}
                         >
-                            <li className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
-                                <Link to='/profile'>Profile</Link>
-                            </li>
-                            <li className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
-                                <Link to='/dashboard'>Dashboard</Link>
-                            </li>
-                            <li className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
+                            <Link to={'/profile'} className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
+                                <Link className='' to='/profile'>Profile</Link>
+                            </Link>
+                            <Link to={'/projects'} className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
                                 <Link to='/projects'>My Projects</Link>
-                            </li>
-                            <li className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
+                            </Link>
+                            <Link to={'/settings'} className='w-full cursor-pointer rounded-md hover:bg-[#70abaf]/90 hover:text-white transition ease-in duration-150 p-2'>
                                 <Link to='/settings'>Settings</Link>
-                            </li>
+                            </Link>
                         </ul>
                     </div>
                 </div>

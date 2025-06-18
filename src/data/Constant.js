@@ -66,3 +66,12 @@ export const projects = [
         date: "4/15/2024",
     },
 ];
+
+const sampleUser = {
+    fullName: "Erik Whiteman",
+    email: "test9@test.com",
+    mobileNo: "+919328091460",
+    address: "19, Harikrishna Bungalows",
+    city: "Mehsana",
+    state: "Gujarat"
+};
