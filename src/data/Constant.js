@@ -67,7 +67,7 @@ export const projects = [
     },
 ];
 
-const sampleUser = {
+export const sampleUser = {
     fullName: "Erik Whiteman",
     email: "test9@test.com",
     mobileNo: "+919328091460",

@@ -9,7 +9,7 @@ const AvatarGenerator = ({ name, size = 40, className = '' }) => {
         <img
             src={avatarUrl}
             alt={`${name}'s avatar`}
-            className={`rounded-full ${className}`}
+            className={`rounded-xl ${className}`}
             width={size}
             height={size}
         />

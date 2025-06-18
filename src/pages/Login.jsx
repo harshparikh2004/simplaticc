@@ -35,7 +35,10 @@ function Login() {
 
         try {
             if (isSignup) {
-                await createUserWithEmailAndPassword(auth, email, password);
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await userCredential.user.updateProfile({
+                    displayName: name,
+                });
                 toast.success('Signup Successful.', {
                     position: "top-center",
                     duration: 1300,
@@ -78,7 +81,7 @@ function Login() {
     };
 
     return (
-        <div className='relative mx-auto flex items-center justify-center mt-32 md:px-16 md:py-8 '>
+        <div className='relative mx-auto flex items-center justify-center mt-32 md:px-16 md:py-8 mb-10'>
             <div className='absolute  md:block -z-20 top-1/5 left-1/3 md:left-1/4 w-[150px] h-[150px] md:w-[400px] md:h-[400px] blur-xl rounded-full md:blur-3xl bg-[#dba159] animate-blob-1'></div>
             <div className='absolute  md:block -z-20 top-[100px] md:top-[200px] left-[130px] md:left-[300px] w-[120px] h-[120px] md:w-[300px] md:h-[300px] blur-xl rounded-full md:blur-3xl bg-[#032224] animate-blob-2'></div>
             <div className='absolute  md:block -z-20 top-[120px] md:top-[240px] left-[190px] md:left-[450px] w-[90px] h-[90px] md:w-[200px] md:h-[200px] blur-xl rounded-full md:blur-3xl bg-[#1d4483] animate-blob-3'></div>

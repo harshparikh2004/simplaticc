@@ -29,46 +29,56 @@ function RecentActivity() {
     };
 
     return (
-        <div className=' mt-8 md:mt-24 h-[82vh] md:h-[87vh]  flex flex-col rounded-md w-full'>
-            <div className='flex  p-4'>
-                <div className='w-full flex flex-col items-start'>
-                    <h1 className='font-bold text-xl md:text-3xl' style={{ fontFamily: 'Syne' }}>Recent Activity</h1>
-                    <p className='font-semibold text-gray-600' style={{ fontFamily: 'Quicksand' }}>Latest updates on your projects</p>
+        <div className="mt-32  md:mt-24 h-[85vh] md:h-[87vh] flex flex-col rounded-md w-full px-4 md:px-8 lg:px-16">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 py-4">
+                <div>
+                    <h1 className="font-bold text-2xl sm:text-3xl" style={{ fontFamily: 'Syne' }}>
+                        Recent Activity
+                    </h1>
+                    <p className="font-semibold text-gray-600 text-sm sm:text-base" style={{ fontFamily: 'Quicksand' }}>
+                        Latest updates on your projects
+                    </p>
                 </div>
-                <div className='w-full flex items-center justify-end'>
-                    <Link
-                        style={{ fontFamily: 'Quicksand' }}
-                        to='/new-project'
-                        className='border border-[#303030] cursor-pointer py-2 px-4 gap-1 items-center hover:rounded-xl justify-center group bg-[#303030] rounded-sm text-white duration-150 ease-in flex'
-                    >
-                        Create Project
-                    </Link>
-                </div>
+                <Link
+                    style={{ fontFamily: 'Quicksand' }}
+                    to="/new-project"
+                    className="border border-[#303030] cursor-pointer py-2 px-4 gap-1 items-center justify-center group bg-[#303030] rounded-md hover:rounded-xl transition-all duration-150 text-white text-sm sm:text-base"
+                >
+                    Create Project
+                </Link>
             </div>
-            <div className='flex flex-col cursor-pointer gap-y-2 justify-center px-4 pb-4 max-h-fit overflow-y-auto pt-132 md:pt-76 scrollbar-thin'>
+
+            {/* Project Cards Section */}
+            <div className="flex flex-col gap-3 overflow-y-auto pb-4 pr-1 md:pr-2 scrollbar-thin">
                 {projects.map((project) => {
                     const { dot, pill } = getStatusColor(project.status);
                     return (
                         <div
                             key={project.id}
-                            className="w-full hover:rounded-lg group border bg-white/60 border-black/10 backdrop-blur-2xl transition-all ease-in duration-150 px-4 py-2 rounded-sm"
+                            className="w-full border bg-white/60 border-black/10 backdrop-blur-2xl px-4 py-3 rounded-md hover:rounded-lg transition-all ease-in-out duration-150"
                         >
-                            <div className="flex gap-2">
-                                <div className='w-13 flex items-center justify-center'>
-                                    <div className={`h-[14px] w-[15px] rounded-full ${dot}`}></div>
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                                {/* Status Dot */}
+                                <div className="hidden flex-shrink-0 sm:flex items-center justify-center">
+                                    <div className={`h-4 w-4 rounded-full ${dot}`} />
                                 </div>
-                                <div className="w-full flex flex-col">
-                                    <h2 className="text-lg text-gray-800 font-bold" style={{ fontFamily: 'Syne' }}>{project.title}</h2>
-                                    <div className='flex items-center justify-start gap-1'>
-                                        <p className="text-gray-600 font-regular text-justify">
-                                            {project.status || 'No status update available.'}
-                                        </p>
-                                        <p className='text-gray-600'>•</p>
-                                        <p className='text-sm tracking-wide'>{project.date}</p>
+
+                                {/* Project Info */}
+                                <div className="flex flex-col flex-grow gap-1">
+                                    <h2 className="text-lg font-bold text-gray-800" style={{ fontFamily: 'Syne' }}>
+                                        {project.title}
+                                    </h2>
+                                    <div className="flex flex-wrap items-center gap-x-2 text-sm text-gray-600" style={{ fontFamily: 'Quicksand' }}>
+                                        <span>{project.status || 'No status update available.'}</span>
+                                        <span>•</span>
+                                        <span>{project.date}</span>
                                     </div>
                                 </div>
-                                <div className='w-full flex items-center justify-end'>
-                                    <p className={`text-sm capitalize font-bold tracking-tighter py-1 px-3 rounded-full ${pill}`} style={{ fontFamily: 'Quicksand' }}>
+
+                                {/* Pill Status */}
+                                <div className="flex-shrink-0 self-start sm:self-center">
+                                    <p className={`text-xs sm:text-sm font-bold capitalize tracking-tight py-1 px-3 rounded-full ${pill}`} style={{ fontFamily: 'Quicksand' }}>
                                         {project.status || 'No status'}
                                     </p>
                                 </div>

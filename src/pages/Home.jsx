@@ -26,7 +26,7 @@ function Home() {
     };
 
     return (
-        <div className='lg:max-w-[1340px] mt-44 w-full mx-auto flex'>
+        <div className='lg:max-w-[1340px] mt-44 w-full mx-auto flex mb-10'>
             <div id='text' className='w-full flex flex-col justify-center px-8 leading-8'>
                 <h1 className='text-5xl lg:text-5xl font-medium' style={{ fontFamily: 'Syne' }}>
                     Welcome to <span className='text-6xl lg:text-7xl text-amber-500 font-extrabold' style={{ fontFamily: 'adam' }}>Simplatic!</span>
