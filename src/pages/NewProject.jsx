@@ -19,9 +19,15 @@ function NewProject() {
     const [formData, setFormData] = useState({});
     const navigate = useNavigate();
 
+    const isLastStep = step === steps.length - 1;
+
     const handleNext = () => {
+        if (formData[steps[step].key]?.trim() === '') {
+            toast.error('Please fill out this field.', { position: 'top-center' });
+            return;
+        }
         setDirection(1);
-        if (step < steps.length - 1) setStep((prev) => prev + 1);
+        if (!isLastStep) setStep((prev) => prev + 1);
     };
 
     const handlePrev = () => {
@@ -34,40 +40,50 @@ function NewProject() {
     };
 
     const handleSubmit = async () => {
+        if (!formData.diagramTypes || !formData.projectTitle) {
+            toast.error('Please complete all fields before submitting.', {
+                position: 'top-center',
+            });
+            return;
+        }
+
         const currentUser = auth.currentUser;
         if (!currentUser) {
-            alert("You must be logged in to submit a project.");
+            toast.error('You must be logged in.', { position: 'top-center' });
             return;
         }
 
         try {
             const structuredData = {
-                projectTitle: formData.projectTitle || '',
-                projectDescription: formData.projectDescription || '',
-                techStack: formData.techStack || '',
-                diagramTypes: (formData.diagramTypes || '').split(',').map(diagram => diagram.trim()),
+                projectTitle: formData.projectTitle.trim(),
+                projectDescription: formData.projectDescription.trim(),
+                techStack: formData.techStack.trim(),
+                diagramTypes: formData.diagramTypes
+                    .split(',')
+                    .map((type) => type.trim())
+                    .filter((v) => v),
+                status: 'inprogress',
                 createdBy: currentUser.email,
+                createdByUid: currentUser.uid,
                 createdAt: serverTimestamp(),
+                lastUpdated: serverTimestamp(),
+                srsContent: '',
             };
 
             await addDoc(collection(db, 'projects'), structuredData);
-            toast.success('Project Saved Successfully.', {
-                position: "top-center",
-                duration: 1300,
+            toast.success('Project saved successfully!', {
+                position: 'top-center',
             });
             setTimeout(() => {
                 navigate('/profile');
             }, 1700);
         } catch (error) {
-            console.error("Error saving project:", error);
-            toast.error('Error saving project.', {
-                position: "top-center",
-                duration: 1300,
+            console.error('Error saving project:', error);
+            toast.error('Something went wrong while saving.', {
+                position: 'top-center',
             });
         }
     };
-
-    const isLastStep = step === steps.length - 1;
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
@@ -81,7 +97,7 @@ function NewProject() {
     };
 
     return (
-        <div className=' w-full h-screen px-8 py-8 flex items-center justify-center'>
+        <div className='w-full h-screen px-8 py-8 flex items-center justify-center'>
             <form
                 onSubmit={(e) => e.preventDefault()}
                 className='w-full h-full max-w-2xl flex flex-col gap-8 justify-center items-center'
@@ -104,6 +120,7 @@ function NewProject() {
                             value={formData[steps[step].key] || ''}
                             onChange={handleChange}
                             onKeyDown={handleKeyDown}
+                            autoFocus
                         />
                     </motion.div>
                 </AnimatePresence>

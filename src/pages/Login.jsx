@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import bg from '../assets/Login.png';
 import { GoEye, GoEyeClosed } from 'react-icons/go';
 import { auth, googleProvider } from '../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { createUserDocument } from '../utils/createUserDocument';
 
 function Login() {
     const navigate = useNavigate();
@@ -34,26 +35,30 @@ function Login() {
         }
 
         try {
+            let userCredential;
+
             if (isSignup) {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await userCredential.user.updateProfile({
-                    displayName: name,
-                });
+                userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await updateProfile(userCredential.user, { displayName: name });
+                await createUserDocument(userCredential.user);
                 toast.success('Signup Successful.', {
                     position: "top-center",
                     duration: 1300,
                 });
             } else {
-                await signInWithEmailAndPassword(auth, email, password);
+                userCredential = await signInWithEmailAndPassword(auth, email, password);
+                await createUserDocument(userCredential.user);
                 toast.success('Signin Successful.', {
                     position: "top-center",
                     duration: 1300,
                 });
             }
+
             setTimeout(() => {
                 navigate('/');
             }, 1700);
         } catch (error) {
+            console.error(error);
             toast.error('Failed to signup/signin', {
                 position: "top-center",
                 duration: 1300,
@@ -63,7 +68,8 @@ function Login() {
 
     const handleGoogleLogin = async () => {
         try {
-            await signInWithPopup(auth, googleProvider);
+            const result = await signInWithPopup(auth, googleProvider);
+            await createUserDocument(result.user);
             toast.success('Google login successful.', {
                 position: "top-center",
                 duration: 1300,
@@ -82,9 +88,10 @@ function Login() {
 
     return (
         <div className='relative mx-auto flex items-center justify-center mt-32 md:px-16 md:py-8 mb-10'>
-            <div className='absolute  md:block -z-20 top-1/5 left-1/3 md:left-1/4 w-[150px] h-[150px] md:w-[400px] md:h-[400px] blur-xl rounded-full md:blur-3xl bg-[#dba159] animate-blob-1'></div>
-            <div className='absolute  md:block -z-20 top-[100px] md:top-[200px] left-[130px] md:left-[300px] w-[120px] h-[120px] md:w-[300px] md:h-[300px] blur-xl rounded-full md:blur-3xl bg-[#032224] animate-blob-2'></div>
-            <div className='absolute  md:block -z-20 top-[120px] md:top-[240px] left-[190px] md:left-[450px] w-[90px] h-[90px] md:w-[200px] md:h-[200px] blur-xl rounded-full md:blur-3xl bg-[#1d4483] animate-blob-3'></div>
+            {/* background blobs */}
+            <div className='absolute md:block -z-20 top-1/5 left-1/3 md:left-1/4 w-[150px] h-[150px] md:w-[400px] md:h-[400px] blur-xl rounded-full md:blur-3xl bg-[#dba159] animate-blob-1'></div>
+            <div className='absolute md:block -z-20 top-[100px] md:top-[200px] left-[130px] md:left-[300px] w-[120px] h-[120px] md:w-[300px] md:h-[300px] blur-xl rounded-full md:blur-3xl bg-[#032224] animate-blob-2'></div>
+            <div className='absolute md:block -z-20 top-[120px] md:top-[240px] left-[190px] md:left-[450px] w-[90px] h-[90px] md:w-[200px] md:h-[200px] blur-xl rounded-full md:blur-3xl bg-[#1d4483] animate-blob-3'></div>
 
             <div className='flex items-center justify-center md:justify-between md:w-[80%] border border-gray-300/70 rounded-md mx-auto'>
                 <div className='flex flex-col px-8 py-8 items-center justify-center gap-6 w-full md:h-[71vh] bg-white/35 md:rounded-tr-4xl md:rounded-br-4xl backdrop-blur-lg transition-all duration-300 ease-in-out'>
@@ -184,7 +191,7 @@ function Login() {
                         <button
                             type="button"
                             onClick={handleGoogleLogin}
-                            className="w-full flex items-center justify-center gap-3 py-2 px-4 bg-white border border-gray-300 font-semibold text-gray-700 rounded-md shadow-sm hover:shadow-md transition-all hover:rounded-xl  duration-150 ease-in cursor-pointer tracking-wider"
+                            className="w-full flex items-center justify-center gap-3 py-2 px-4 bg-white border border-gray-300 font-semibold text-gray-700 rounded-md shadow-sm hover:shadow-md transition-all hover:rounded-xl duration-150 ease-in cursor-pointer tracking-wider"
                         >
                             <img
                                 src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
