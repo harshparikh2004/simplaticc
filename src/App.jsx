@@ -9,6 +9,7 @@ import Profile from './pages/Profile'
 import NewProject from './pages/NewProject'
 import TestFirebase from './pages/TestFirebase'
 import Projects from './pages/Projects'
+import ViewSRS from './pages/ViewSRS'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path='/new-project' element={<NewProject/>}/>
             <Route path="/test-firebase" element={<TestFirebase />} />
             <Route path="/projects" element={<Projects />} />
+            <Route path="/srs/:projectId" element={<ViewSRS />} />
           </Routes>
           <Footer />
         </div>
