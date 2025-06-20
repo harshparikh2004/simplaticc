@@ -1,7 +1,7 @@
 import { genAI } from './geminiClient';
 
 export const generateSRS = async (projectData) => {
-    const model = genAI.getGenerativeModel({ model: "models/gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const {
         projectTitle = 'Untitled Project',
