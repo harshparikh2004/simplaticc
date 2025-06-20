@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { db } from '../firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db, auth } from '../firebase';
+import { collection, addDoc, serverTimestamp, updateDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
-import { auth } from '../firebase';
+import { generateSRS } from '../utils/generateSRS';
 
 const steps = [
     { name: 'Project Name', placeholder: 'Enter Project Name', key: 'projectTitle', type: 'text' },
@@ -41,9 +41,7 @@ function NewProject() {
 
     const handleSubmit = async () => {
         if (!formData.diagramTypes || !formData.projectTitle) {
-            toast.error('Please complete all fields before submitting.', {
-                position: 'top-center',
-            });
+            toast.error('Please complete all fields before submitting.', { position: 'top-center' });
             return;
         }
 
@@ -58,10 +56,7 @@ function NewProject() {
                 projectTitle: formData.projectTitle.trim(),
                 projectDescription: formData.projectDescription.trim(),
                 techStack: formData.techStack.trim(),
-                diagramTypes: formData.diagramTypes
-                    .split(',')
-                    .map((type) => type.trim())
-                    .filter((v) => v),
+                diagramTypes: formData.diagramTypes.split(',').map((type) => type.trim()).filter(Boolean),
                 status: 'inprogress',
                 createdBy: currentUser.email,
                 createdByUid: currentUser.uid,
@@ -70,18 +65,25 @@ function NewProject() {
                 srsContent: '',
             };
 
-            await addDoc(collection(db, 'projects'), structuredData);
-            toast.success('Project saved successfully!', {
-                position: 'top-center',
+            const docRef = await addDoc(collection(db, 'projects'), structuredData);
+
+            // Generate SRS using AI
+            const srsResult = await generateSRS(structuredData);
+
+            await updateDoc(doc(db, 'projects', docRef.id), {
+                srsContent: srsResult,
+                status: 'completed',
+                lastUpdated: serverTimestamp(),
             });
+
+            toast.success('SRS generated and saved!');
             setTimeout(() => {
-                navigate('/profile');
+                navigate(`/view/${docRef.id}`);
             }, 1700);
+
         } catch (error) {
             console.error('Error saving project:', error);
-            toast.error('Something went wrong while saving.', {
-                position: 'top-center',
-            });
+            toast.error(`Something went wrong: ${error.message}`, { position: 'top-center' });
         }
     };
 
