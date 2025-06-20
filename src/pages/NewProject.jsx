@@ -78,7 +78,7 @@ function NewProject() {
 
             toast.success('SRS generated and saved!');
             setTimeout(() => {
-                navigate(`/view/${docRef.id}`);
+                navigate(`/srs/${docRef.id}`);
             }, 1700);
 
         } catch (error) {
