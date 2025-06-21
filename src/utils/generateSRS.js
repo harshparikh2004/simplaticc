@@ -11,8 +11,10 @@ export const generateSRS = async (projectData) => {
     } = projectData;
 
     // Format the prompt
-    const prompt = `You are a professional software engineer and technical documentation expert. Generate a comprehensive and detailed Software Requirements Specification (SRS) document in compliance with the IEEE 830-1998 standard.
-    
+    const prompt = `You are a senior software architect and IEEE documentation expert. Generate a comprehensive, detailed, and production-grade Software Requirements Specification (SRS) document in full compliance with the IEEE 830-1998 standard.
+
+    This SRS is to be written in a formal, technical, and professional tone and must be suitable for academic, enterprise, or government submission. The content should be highly structured, detailed, and elaborate — long enough to span at least 16–18 pages when properly formatted in Word or PDF (11–12 pt font, 1.5 spacing).
+
     Project Title: ${projectTitle}
     Project Description: ${projectDescription}
     Technology Stack: ${techStack}
@@ -20,50 +22,94 @@ export const generateSRS = async (projectData) => {
 
     Your responsibilities include:
 
-    1. Structure the SRS according to IEEE standard sections, including but not limited to:
+    Follow the full IEEE 830-1998 standard structure and elaborate extensively in each section:
 
-   - 1. Introduction
-     - 1.1 Purpose
-     - 1.2 Document Conventions
-     - 1.3 Intended Audience and Reading Suggestions
-     - 1.4 Project Scope
-     - 1.5 References
-   - 2. Overall Description
-     - 2.1 Product Perspective
-     - 2.2 Product Functions
-     - 2.3 User Classes and Characteristics
-     - 2.4 Operating Environment
-     - 2.5 Design and Implementation Constraints
-     - 2.6 User Documentation
-     - 2.7 Assumptions and Dependencies
-   - 3. System Features (detailed functional requirements)
-     - Each feature should include: Description, Functional Requirements, Preconditions, Postconditions, and Exceptions
-   - 4. External Interface Requirements
-     - 4.1 User Interfaces
-     - 4.2 Hardware Interfaces
-     - 4.3 Software Interfaces
-     - 4.4 Communication Interfaces
-   - 5. Non-Functional Requirements
-     - Performance, Reliability, Security, Maintainability, Scalability, and Usability requirements
-   - 6. Other Requirements (Legal, Regulatory, Licensing, etc.)
-   - 7. Appendices and Glossary
+    Section 1. Introduction
 
-    2. Include all required diagrams where appropriate based on ${diagramTypes.join(', ')}. Use Mermaid or PlantUML code blocks. Provide meaningful and structured diagrams such as:
-   - Use Case Diagram
-   - Entity Relationship Diagram (ERD)
-   - Data Flow Diagram (DFD)
-   - Activity Diagram
-   - Class Diagram
+    1.1 Purpose — Explain the full scope and objective of the document
+    1.2 Document Conventions — Describe all formatting, naming, references, and units conventions
+    1.3 Intended Audience and Reading Suggestions — List primary and secondary stakeholders and their reading path
+    1.4 Project Scope — Define system boundaries, features, goals, benefits, out-of-scope features
+    1.5 References — Include standards, APIs, frameworks, academic papers, and system dependencies
 
-    3. Use rich Markdown formatting:
-   - Use proper heading levels (e.g., ##, ###)
-   - Use bullet points, tables, and code blocks where appropriate
-   - Use emphasis, bold, or italics for clarity
+    Section 2. Overall Description
 
-    4. Make the content exhaustive and elaborative. Write in formal and professional tone.
-    5. Include no additional commentary, instructions, or summary — only the SRS document content.
+    2.1 Product Perspective — Describe the system architecture, dependencies, modular design, external APIs
+    2.2 Product Functions — List and elaborate on all major functional modules (minimum 10), each explained with sub-points
+    2.3 User Classes and Characteristics — Detail 4–5 different user roles with characteristics and privileges
+    2.4 Operating Environment — Elaborate on browsers, OS, server/cloud stack, and DBMS
+    2.5 Design and Implementation Constraints — Discuss languages, libraries, frameworks, latency constraints, and regulations
+    2.6 User Documentation — List inline help, user guides, onboarding manuals, and video documentation
+    2.7 Assumptions and Dependencies — At least 6 well-thought-out assumptions and external dependencies
 
-    Begin the SRS document now based on the provided project details.`.trim();
+    Section 3. System Features (Very Detailed)
+
+    Minimum 10 system features or modules For each feature, provide:
+
+    -Name and ID
+    -Description
+    
+    Functional Requirements (Use FR-IDs like FR-1.1, FR-2.4)
+
+    -Preconditions
+    -Postconditions
+    -Exceptions and error handling
+    -Optional: Table format or flow diagram per feature
+
+    Section 4. External Interface Requirements
+
+    4.1 User Interfaces — Describe all UI components, pages, screens, responsive behaviors
+    4.2 Hardware Interfaces — List devices, sensors, or integrations (if applicable)
+    4.3 Software Interfaces — List all APIs, SDKs, and internal microservices (minimum 4)
+    4.4 Communication Interfaces — List protocols, ports, services, REST endpoints, JSON schemas, rate limits
+
+    Section 5. Non-Functional Requirements
+
+    -Performance, Security, Usability, Availability, Maintainability, Portability, Accessibility
+    -Minimum 5–6 detailed requirements under each category, written clearly
+
+    Section 6. Additional Requirements
+
+    -Legal, Regulatory, Privacy, Accessibility (WCAG), Internationalization, Licensing
+    -Example: GDPR, CCPA, FERPA, ISO27001, MIT License, multilingual support, mobile-first
+
+    Section 7. Appendices
+
+    -Appendix A: Glossary (Minimum 20 terms)
+    -Appendix B: Acronyms
+    -Appendix C: Future Work / Enhancements
+    -Appendix D: Change History Table
+
+    Diagrams (Embedded via Mermaid or PlantUML code blocks)
+    Include at least one high-quality, accurate diagram of each type where applicable:
+
+    Use Case Diagram
+
+    -Entity Relationship Diagram (ERD)
+    -Data Flow Diagram (DFD) (Context, Level 1)
+    -Class Diagram
+    -Activity Diagram
+    -Sequence Diagram (optional)
+
+    Include code blocks using mermaid or plantuml with appropriate indentation
+
+    Markdown Formatting
+
+    -Use semantic headings with #, ##, and ###
+    -Use bold, italics, bullet points, numbered lists, and tables as needed
+    -Use code blocks for all diagrams and example structures
+    -Ensure content renders well in Markdown viewers and HTML
+
+    Writing Instructions
+
+    -Write in a formal, academic, and technical tone
+    -Do not include commentary, instructional text, or meta information
+
+    Include only the final SRS document content
+
+    -Ensure consistency, clarity, completeness, and modularity
+
+    Begin generating the SRS document now based on the provided project details.`.trim();
 
     try {
         const result = await model.generateContent(prompt);
