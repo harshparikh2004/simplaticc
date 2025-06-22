@@ -1,7 +1,7 @@
 import React, { Suspense, useState, useEffect } from 'react'
 import './index.css'
 import { Route, Routes, useLocation } from 'react-router-dom'
-import { DotLottieReact } from '@lottiefiles/dotlottie-react'
+import Loader from './components/Loader'
 
 // Lazy load all components and pages
 const Navbar = React.lazy(() => import('./components/Navbar'))
@@ -16,29 +16,9 @@ const ViewSRS = React.lazy(() => import('./pages/ViewSRS'))
 
 // Initial loading component for the entire app
 const InitialLoader = () => (
-  <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
-    <div className="w-64 h-64">
-      <DotLottieReact
-        src="https://lottie.host/c02aa785-4920-4771-8bed-0c6c3d6f3941/kvgnloyGpu.lottie"
-        loop
-        autoplay
-      />
-    </div>
-  </div>
+  <Loader/>
 )
 
-// Page loading component for route changes
-const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-[50vh]">
-    <div className="w-32 h-32">
-      <DotLottieReact
-        src="https://lottie.host/c02aa785-4920-4771-8bed-0c6c3d6f3941/kvgnloyGpu.lottie"
-        loop
-        autoplay
-      />
-    </div>
-  </div>
-)
 
 // Component to handle route-based loading
 const RouteHandler = () => {
@@ -55,9 +35,9 @@ const RouteHandler = () => {
   }, [location.pathname])
 
   return (
-    <Suspense fallback={<PageLoader />}>
+    <Suspense fallback={<Loader/>}>
       {isPageLoading ? (
-        <PageLoader />
+        <Loader/>
       ) : (
         <Routes>
           <Route path='/' element={<Home />} />

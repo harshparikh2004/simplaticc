@@ -17,6 +17,7 @@ function NewProject() {
     const [step, setStep] = useState(0);
     const [direction, setDirection] = useState(1);
     const [formData, setFormData] = useState({});
+    const [isGenerating, setIsGenerating] = useState(false);
     const navigate = useNavigate();
 
     const isLastStep = step === steps.length - 1;
@@ -51,6 +52,8 @@ function NewProject() {
             return;
         }
 
+        setIsGenerating(true);
+
         try {
             const structuredData = {
                 projectTitle: formData.projectTitle.trim(),
@@ -84,6 +87,7 @@ function NewProject() {
         } catch (error) {
             console.error('Error saving project:', error);
             toast.error(`Something went wrong: ${error.message}`, { position: 'top-center' });
+            setIsGenerating(false);
         }
     };
 
@@ -99,10 +103,12 @@ function NewProject() {
     };
 
     return (
-        <div className='w-full h-screen px-8 py-8 flex items-center justify-center'>
+        <div className='w-full h-screen px-8 py-8 flex items-center justify-center relative'>
+            {/* Main Form */}
             <form
                 onSubmit={(e) => e.preventDefault()}
-                className='w-full h-full max-w-2xl flex flex-col gap-8 justify-center items-center'
+                className={`w-full h-full max-w-2xl flex flex-col gap-8 justify-center items-center transition-all duration-300 ${isGenerating ? 'blur-sm scale-95' : ''
+                    }`}
                 style={{ fontFamily: 'Quicksand' }}
             >
                 <AnimatePresence mode='wait' initial={false}>
@@ -123,6 +129,7 @@ function NewProject() {
                             onChange={handleChange}
                             onKeyDown={handleKeyDown}
                             autoFocus
+                            disabled={isGenerating}
                         />
                     </motion.div>
                 </AnimatePresence>
@@ -131,7 +138,7 @@ function NewProject() {
                     <button
                         type='button'
                         onClick={handlePrev}
-                        disabled={step === 0}
+                        disabled={step === 0 || isGenerating}
                         className='w-[160px] py-2 px-4 bg-gray-300 hover:bg-gray-400 text-black rounded-md transition-all duration-150 disabled:opacity-50'
                     >
                         Previous
@@ -141,7 +148,8 @@ function NewProject() {
                         <button
                             type='button'
                             onClick={handleSubmit}
-                            className='w-[160px] py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-md transition-all duration-150'
+                            disabled={isGenerating}
+                            className='w-[160px] py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-md transition-all duration-150 disabled:opacity-50'
                         >
                             Submit
                         </button>
@@ -149,13 +157,88 @@ function NewProject() {
                         <button
                             type='button'
                             onClick={handleNext}
-                            className='w-[160px] py-2 px-4 bg-[#303030] hover:bg-[#1e1e1e] text-white rounded-md transition-all duration-150'
+                            disabled={isGenerating}
+                            className='w-[160px] py-2 px-4 bg-[#303030] hover:bg-[#1e1e1e] text-white rounded-md transition-all duration-150 disabled:opacity-50'
                         >
                             Next
                         </button>
                     )}
                 </div>
             </form>
+
+            {/* Loading Overlay */}
+            <AnimatePresence>
+                {isGenerating && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className='absolute inset-0 flex items-center justify-center z-50'
+                    >
+                        {/* Pulse Animation */}
+                        <motion.div
+                            className='absolute rounded-full bg-blue-500/20'
+                            animate={{
+                                scale: [0, 4, 0],
+                                opacity: [0.8, 0.3, 0],
+                            }}
+                            transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                ease: "easeOut"
+                            }}
+                            style={{
+                                width: '200px',
+                                height: '200px',
+                            }}
+                        />
+
+                        {/* Second pulse for layered effect */}
+                        <motion.div
+                            className='absolute rounded-full bg-blue-400/15'
+                            animate={{
+                                scale: [0, 5, 0],
+                                opacity: [0.6, 0.2, 0],
+                            }}
+                            transition={{
+                                duration: 2.5,
+                                repeat: Infinity,
+                                ease: "easeOut",
+                                delay: 0.3
+                            }}
+                            style={{
+                                width: '200px',
+                                height: '200px',
+                            }}
+                        />
+
+                        {/* Loading Text */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className='text-center z-10'
+                        >
+                            <motion.h2
+                                className='text-2xl font-bold text-gray-800 mb-2'
+                                animate={{ opacity: [0.7, 1, 0.7] }}
+                                transition={{ duration: 1.5, repeat: Infinity }}
+                                style={{ fontFamily: 'Quicksand' }}
+                            >
+                                SRS is being generated...
+                            </motion.h2>
+                            <motion.p
+                                className='text-gray-600'
+                                animate={{ opacity: [0.5, 0.8, 0.5] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                                style={{ fontFamily: 'Quicksand' }}
+                            >
+                                Please be patient, this may take a moment
+                            </motion.p>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <Toaster />
         </div>
     );
