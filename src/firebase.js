@@ -26,5 +26,5 @@ const auth = getAuth(app);
 
 
 // Export the services you need
-export { db, auth };
+export { db, auth, app };
 export const googleProvider = new GoogleAuthProvider();

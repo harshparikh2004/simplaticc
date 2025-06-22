@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import bg from '../assets/Login.png';
 import { GoEye, GoEyeClosed } from 'react-icons/go';
 import { auth, googleProvider } from '../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile, GoogleAuthProvider } from 'firebase/auth';
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { createUserDocument } from '../utils/createUserDocument';
@@ -25,10 +25,10 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        
         if (isSignup && password !== confirmPassword) {
-            toast.error("Passwords do not match.", {
-                position: "top-center",
+            toast.error('Passwords do not match.', {
+                position: 'top-center',
                 duration: 1300,
             });
             return;
@@ -42,14 +42,14 @@ function Login() {
                 await updateProfile(userCredential.user, { displayName: name });
                 await createUserDocument(userCredential.user);
                 toast.success('Signup Successful.', {
-                    position: "top-center",
+                    position: 'top-center',
                     duration: 1300,
                 });
             } else {
                 userCredential = await signInWithEmailAndPassword(auth, email, password);
                 await createUserDocument(userCredential.user);
                 toast.success('Signin Successful.', {
-                    position: "top-center",
+                    position: 'top-center',
                     duration: 1300,
                 });
             }
@@ -60,7 +60,7 @@ function Login() {
         } catch (error) {
             console.error(error);
             toast.error('Failed to signup/signin', {
-                position: "top-center",
+                position: 'top-center',
                 duration: 1300,
             });
         }
@@ -68,19 +68,39 @@ function Login() {
 
     const handleGoogleLogin = async () => {
         try {
+            // Add Google Docs API scopes to the provider
+            googleProvider.addScope('https://www.googleapis.com/auth/documents');
+            googleProvider.addScope('https://www.googleapis.com/auth/drive.file');
+            
             const result = await signInWithPopup(auth, googleProvider);
+            
+            // Get the access token for Google APIs
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const accessToken = credential?.accessToken;
+            
+            // Store the access token for Google Docs API usage
+            if (accessToken) {
+                localStorage.setItem('google_access_token', accessToken);
+                toast.success('Google login successful with Docs access!', {
+                    position: 'top-center',
+                    duration: 1300,
+                });
+            } else {
+                toast.success('Google login successful.', {
+                    position: 'top-center',
+                    duration: 1300,
+                });
+            }
+            
             await createUserDocument(result.user);
-            toast.success('Google login successful.', {
-                position: "top-center",
-                duration: 1300,
-            });
+            
             setTimeout(() => {
                 navigate('/');
             }, 1700);
         } catch (err) {
-            console.error("Google login error:", err);
+            console.error('Google login error:', err);
             toast.error('Google login failed.', {
-                position: "top-center",
+                position: 'top-center',
                 duration: 1300,
             });
         }
@@ -88,7 +108,7 @@ function Login() {
 
     return (
         <div className='relative mx-auto flex items-center justify-center mt-32 md:px-16 md:py-8 mb-10'>
-            {/* background blobs */}
+            {/* Background blobs */}
             <div className='absolute md:block -z-20 top-1/5 left-1/3 md:left-1/4 w-[150px] h-[150px] md:w-[400px] md:h-[400px] blur-xl rounded-full md:blur-3xl bg-[#dba159] animate-blob-1'></div>
             <div className='absolute md:block -z-20 top-[100px] md:top-[200px] left-[130px] md:left-[300px] w-[120px] h-[120px] md:w-[300px] md:h-[300px] blur-xl rounded-full md:blur-3xl bg-[#032224] animate-blob-2'></div>
             <div className='absolute md:block -z-20 top-[120px] md:top-[240px] left-[190px] md:left-[450px] w-[90px] h-[90px] md:w-[200px] md:h-[200px] blur-xl rounded-full md:blur-3xl bg-[#1d4483] animate-blob-3'></div>
@@ -100,43 +120,51 @@ function Login() {
                     </h1>
 
                     <form className='w-full flex flex-col gap-3' onSubmit={handleSubmit}>
-                        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isSignup ? 'max-h-28 opacity-100' : 'max-h-0 opacity-0'} flex flex-col gap-1`}>
-                            <label htmlFor="name" className='font-medium' style={{ fontFamily: 'Quicksand' }}>Name</label>
-                            <input
-                                type="text"
-                                id='name'
-                                className='bg-white/40 border font-semibold border-black/30 px-2 outline-none py-1 rounded-sm'
-                                style={{ fontFamily: 'Quicksand' }}
-                                placeholder='John Doe'
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
-                        </div>
+                        {isSignup && (
+                            <div className='flex flex-col gap-1'>
+                                <label htmlFor='name' className='font-medium' style={{ fontFamily: 'Quicksand' }}>
+                                    Name
+                                </label>
+                                <input
+                                    type='text'
+                                    id='name'
+                                    className='bg-white/40 border font-semibold border-black/30 px-2 outline-none py-1 rounded-sm'
+                                    placeholder='John Doe'
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    style={{ fontFamily: 'Quicksand' }}
+                                />
+                            </div>
+                        )}
 
                         <div className='flex flex-col gap-1'>
-                            <label htmlFor="email" className='font-medium' style={{ fontFamily: 'Quicksand' }}>Email</label>
+                            <label htmlFor='email' className='font-medium' style={{ fontFamily: 'Quicksand' }}>
+                                Email
+                            </label>
                             <input
-                                type="email"
+                                type='email'
                                 id='email'
                                 className='bg-white/40 border font-semibold border-black/30 px-2 outline-none py-1 rounded-sm'
-                                style={{ fontFamily: 'Quicksand' }}
                                 placeholder='sample@email.com'
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                style={{ fontFamily: 'Quicksand' }}
                             />
                         </div>
 
                         <div className='flex flex-col gap-1'>
-                            <label htmlFor="password" className='font-medium' style={{ fontFamily: 'Quicksand' }}>Password</label>
+                            <label htmlFor='password' className='font-medium' style={{ fontFamily: 'Quicksand' }}>
+                                Password
+                            </label>
                             <div className='relative'>
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     id='password'
                                     className='w-full bg-white/40 border font-semibold border-black/30 px-2 outline-none py-1 rounded-sm'
-                                    style={{ fontFamily: 'Quicksand' }}
                                     placeholder='••••••••'
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
+                                    style={{ fontFamily: 'Quicksand' }}
                                 />
                                 {showPassword ? (
                                     <GoEyeClosed
@@ -152,31 +180,35 @@ function Login() {
                             </div>
                         </div>
 
-                        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isSignup ? 'max-h-28 opacity-100' : 'max-h-0 opacity-0'} flex flex-col gap-1`}>
-                            <label htmlFor="confirm-password" className='font-medium' style={{ fontFamily: 'Quicksand' }}>Confirm Password</label>
-                            <div className='relative'>
-                                <input
-                                    type={showConfirmPassword ? 'text' : 'password'}
-                                    id='confirm-password'
-                                    className='w-full bg-white/40 border font-semibold border-black/30 px-2 outline-none py-1 rounded-sm'
-                                    style={{ fontFamily: 'Quicksand' }}
-                                    placeholder='••••••••'
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                />
-                                {showConfirmPassword ? (
-                                    <GoEyeClosed
-                                        onClick={() => setShowConfirmPassword(false)}
-                                        className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-xl'
+                        {isSignup && (
+                            <div className='flex flex-col gap-1'>
+                                <label htmlFor='confirm-password' className='font-medium' style={{ fontFamily: 'Quicksand' }}>
+                                    Confirm Password
+                                </label>
+                                <div className='relative'>
+                                    <input
+                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        id='confirm-password'
+                                        className='w-full bg-white/40 border font-semibold border-black/30 px-2 outline-none py-1 rounded-sm'
+                                        placeholder='••••••••'
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        style={{ fontFamily: 'Quicksand' }}
                                     />
-                                ) : (
-                                    <GoEye
-                                        onClick={() => setShowConfirmPassword(true)}
-                                        className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-xl'
-                                    />
-                                )}
+                                    {showConfirmPassword ? (
+                                        <GoEyeClosed
+                                            onClick={() => setShowConfirmPassword(false)}
+                                            className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-xl'
+                                        />
+                                    ) : (
+                                        <GoEye
+                                            onClick={() => setShowConfirmPassword(true)}
+                                            className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-xl'
+                                        />
+                                    )}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         <div className={`${isSignup ? 'mt-4' : 'mt-2'}`}>
                             <button
@@ -187,38 +219,37 @@ function Login() {
                                 {isSignup ? 'Signup' : 'Signin'}
                             </button>
                         </div>
-
-                        <button
-                            type="button"
-                            onClick={handleGoogleLogin}
-                            className="w-full flex items-center justify-center gap-3 py-2 px-4 bg-white border border-gray-300 font-semibold text-gray-700 rounded-md shadow-sm hover:shadow-md transition-all hover:rounded-xl duration-150 ease-in cursor-pointer tracking-wider"
-                        >
-                            <img
-                                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                                alt="Google"
-                                className="w-5 h-5"
-                            />
-                            <span style={{ fontFamily: 'Syne' }}>{isSignup ? 'Sign up with Google' : 'Sign in with Google'}</span>
-                        </button>
-
-                        <div className='flex items-center justify-start gap-2'>
-                            <p style={{ fontFamily: 'Quicksand' }}>
-                                {isSignup ? 'Already have an account?' : "Don't have an account?"}
-                            </p>
-                            <button
-                                onClick={toggleMode}
-                                type='button'
-                                className='cursor-pointer after:rounded-full relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-black after:transition-all after:duration-300 hover:after:w-full text-[#032224] text-lg'
-                                style={{ fontFamily: 'Syne' }}
-                            >
-                                {isSignup ? 'Signin' : 'Signup'}
-                            </button>
-                        </div>
                     </form>
+
+                    {/* Firebase Auth Google Sign-In with Docs API access */}
+                    <button
+                        type='button'
+                        onClick={handleGoogleLogin}
+                        className='w-full flex items-center justify-center gap-3 py-2 px-4 bg-white border border-gray-300 font-semibold text-gray-700 rounded-md shadow-sm hover:shadow-md transition-all hover:rounded-xl duration-150 ease-in cursor-pointer tracking-wider'
+                    >
+                        <img src='https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg' alt='Google' className='w-5 h-5' />
+                        <span style={{ fontFamily: 'Syne' }}>
+                            {isSignup ? 'Sign up with Google' : 'Sign in with Google'}
+                        </span>
+                    </button>
+
+                    <div className='flex items-center justify-start gap-2'>
+                        <p style={{ fontFamily: 'Quicksand' }}>
+                            {isSignup ? 'Already have an account?' : "Don't have an account?"}
+                        </p>
+                        <button
+                            onClick={toggleMode}
+                            type='button'
+                            className='cursor-pointer after:rounded-full relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-black after:transition-all after:duration-300 hover:after:w-full text-[#032224] text-lg'
+                            style={{ fontFamily: 'Syne' }}
+                        >
+                            {isSignup ? 'Signin' : 'Signup'}
+                        </button>
+                    </div>
                 </div>
 
                 <div className='w-full hidden md:block'>
-                    <img src={bg} alt="Login Section" className='w-full object-contain' />
+                    <img src={bg} alt='Login Section' className='w-full object-contain' />
                 </div>
             </div>
             <Toaster />
