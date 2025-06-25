@@ -1,10 +1,12 @@
 import React from 'react'
-import loader from '../assets/animation/simplatic_animation.gif'
+import loader from '../assets/animation/Simplatic.mp4'
 
 function Loader() {
     return (
         <div className='fixed inset-0 bg-white z-50 flex items-center justify-center'>
-            <img src={loader} alt="Loading..." />
+            <video autoPlay loop>
+                <source src={loader}/>
+            </video>
         </div>
     )
 }

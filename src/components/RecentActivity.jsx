@@ -11,7 +11,7 @@ import {
 } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { Clock, FileText, Loader2 } from 'lucide-react';
+import { Clock, FileText, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 function RecentActivity() {
@@ -20,6 +20,8 @@ function RecentActivity() {
     const [error, setError] = useState(null);
     const [user, setUser] = useState(null);
     const [authLoading, setAuthLoading] = useState(true);
+    const [showAllProjects, setShowAllProjects] = useState(false);
+    const [totalProjectCount, setTotalProjectCount] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -46,7 +48,7 @@ function RecentActivity() {
             collection(db, 'projects'),
             where('createdByUid', '==', user.uid),
             orderBy('createdAt', 'desc'),
-            limit(10) // Limit to recent 10 projects
+            ...(showAllProjects ? [] : [limit(10)]) // Apply limit only when not showing all
         );
 
         const unsubscribe = onSnapshot(
@@ -61,6 +63,7 @@ function RecentActivity() {
                 });
 
                 setProjects(projectsData);
+                setTotalProjectCount(projectsData.length);
                 setLoading(false);
                 setError(null);
             },
@@ -73,7 +76,7 @@ function RecentActivity() {
 
         // Cleanup listener on component unmount
         return () => unsubscribe();
-    }, [user, authLoading]);
+    }, [user, authLoading, showAllProjects]);
 
     const formatDate = (timestamp) => {
         if (!timestamp) return 'No date';
@@ -135,6 +138,10 @@ function RecentActivity() {
             // Handle in-progress or draft projects
             navigate(`/project/${projectId}`);
         }
+    };
+
+    const handleToggleShowAll = () => {
+        setShowAllProjects(!showAllProjects);
     };
 
     if (authLoading || loading) {
@@ -218,16 +225,41 @@ function RecentActivity() {
                         Recent Activity
                     </h1>
                     <p className="font-semibold text-gray-600 text-sm sm:text-base" style={{ fontFamily: 'Quicksand' }}>
-                        Latest updates on your projects
+                        {showAllProjects
+                            ? `All ${totalProjectCount} projects`
+                            : `Latest ${Math.min(projects.length, 10)} of ${totalProjectCount} projects`
+                        }
                     </p>
                 </div>
-                <Link
-                    style={{ fontFamily: 'Quicksand' }}
-                    to="/new-project"
-                    className="border border-[#303030] cursor-pointer py-2 px-4 gap-1 items-center justify-center group bg-[#303030] rounded-md hover:rounded-xl transition-all duration-150 text-white text-sm sm:text-base"
-                >
-                    Create Project
-                </Link>
+                <div className="flex items-center gap-2">
+                    {/* Show All/Show Less Button */}
+                    {totalProjectCount > 10 && (
+                        <button
+                            onClick={handleToggleShowAll}
+                            className="flex items-center gap-2 border border-gray-300 cursor-pointer py-2 px-4 bg-white rounded-md hover:rounded-lg hover:bg-gray-50 transition-all duration-150 text-gray-700 text-sm sm:text-base"
+                            style={{ fontFamily: 'Quicksand' }}
+                        >
+                            {showAllProjects ? (
+                                <>
+                                    <ChevronUp className="w-4 h-4" />
+                                    Show Less
+                                </>
+                            ) : (
+                                <>
+                                    <ChevronDown className="w-4 h-4" />
+                                    Show All ({totalProjectCount})
+                                </>
+                            )}
+                        </button>
+                    )}
+                    <Link
+                        style={{ fontFamily: 'Quicksand' }}
+                        to="/new-project"
+                        className="border border-[#303030] cursor-pointer py-2 px-4 gap-1 items-center justify-center group bg-[#303030] rounded-md hover:rounded-xl transition-all duration-150 text-white text-sm sm:text-base"
+                    >
+                        Create Project
+                    </Link>
+                </div>
             </div>
 
             {/* Project Cards Section */}
@@ -241,7 +273,7 @@ function RecentActivity() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                transition={{ duration: 0.3, delay: index * 0.1 }}
+                                transition={{ duration: 0.3, delay: index * 0.05 }}
                                 onClick={() => handleProjectClick(project.id, project.status)}
                                 className="w-full border bg-white/60 border-black/10 backdrop-blur-2xl px-4 py-3 rounded-md hover:rounded-lg transition-all ease-in-out duration-150 cursor-pointer"
                             >
