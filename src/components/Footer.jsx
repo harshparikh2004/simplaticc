@@ -26,53 +26,53 @@ function Footer() {
           <div className='text-white flex flex-col items-center mt-4 md:mt-0 justify-center md:items-start' style={{fontFamily:'Quicksand'}}>
             <h3 className='text-2xl md:text-lg font-black tracking-wider' style={{fontFamily:'dastin'}}>Product</h3>
             <ul className='flex flex-col gap-4 mt-6 md:mt-8'>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>Features</Link></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>Pricing</Link></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>Integrations</Link></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>API</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/features'>Features</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/pricing'>Pricing</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/integrations'>Integrations</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/api'>API</Link></li>
             </ul>
           </div>
           <div className='text-white flex flex-col items-center mt-4 md:mt-0 justify-center md:items-start' style={{fontFamily:'Quicksand'}}>
             <h3 className='text-2xl md:text-lg font-black tracking-wider' style={{fontFamily:'dastin'}}>Company</h3>
             <ul className='flex flex-col gap-4 mt-6 md:mt-8'>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>About</Link></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>Careers</Link></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>Blog</Link></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>Press</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/about'>About</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/careers'>Careers</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/blog'>Blog</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/press'>Press</Link></li>
             </ul>
           </div>
           <div className='text-white flex flex-col items-center mt-4 md:mt-0 justify-center md:items-start' style={{fontFamily:'Quicksand'}}>
             <h3 className='text-2xl md:text-lg font-black tracking-wider' style={{fontFamily:'dastin'}}>Docs</h3>
             <ul className='flex flex-col gap-4 mt-6 md:mt-8'>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>Getting started</Link></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>api references</Link></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>tutorials</Link></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>examples</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/docs/getting-started'>Getting started</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/docs/api-reference'>api references</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/docs/tutorials'>tutorials</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/docs/examples'>examples</Link></li>
             </ul>
           </div>
           <div className='text-white flex flex-col items-center mt-4 md:mt-0 justify-center md:items-start' style={{fontFamily:'Quicksand'}}>
             <h3 className='text-2xl md:text-lg font-black tracking-wider' style={{fontFamily:'dastin'}}>Resources</h3>
             <ul className='flex flex-col gap-4 mt-6 md:mt-8'>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>help centers</Link></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>community</Link></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>webinars</Link></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/'>downloads</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/resources/help-center'>help centers</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/resources/community'>community</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/resources/webinars'>webinars</Link></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><Link to='/resources/downloads'>downloads</Link></li>
             </ul>
           </div>
           <div className='text-white flex flex-col items-center mt-4 md:mt-0 justify-center md:items-start' style={{fontFamily:'Quicksand'}}>
             <h3 className='text-2xl md:text-lg font-black tracking-wider' style={{fontFamily:'dastin'}}>Connect</h3>
             <ul className='flex flex-col gap-4 mt-6 md:mt-8'>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><a href='https://www.youtube.com' target="_blank">linkedin</a></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><a href='https://www.youtube.com' target="_blank">github</a></li>
-              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><a href='https://www.youtube.com' target="_blank">twitter</a></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><a href='https://www.linkedin.com' target="_blank" rel="noreferrer">linkedin</a></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><a href='https://github.com' target="_blank" rel="noreferrer">github</a></li>
+              <li className='text-xl md:text-base font-medium cursor-pointer opacity-70 hover:opacity-100 transition-all duration-100 ease capitalize'><a href='https://twitter.com' target="_blank" rel="noreferrer">twitter</a></li>
             </ul>
           </div>
         </div>
         <div className='capitalize flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 my-12 text-white' style={{fontFamily:'syne'}}>
           <p className='text-2xl lg:text-sm font-semibold mb-4 md:mb-0'>© 2025 Simplatic</p>
-          <p className='text-xl lg:text-sm font-medium opacity-70 hover:opacity-100 transition'>privacy policy</p>
-          <p className='text-xl lg:text-sm font-medium opacity-70 hover:opacity-100 transition'>terms</p>
-          <p className='text-xl lg:text-sm font-medium opacity-70 hover:opacity-100 transition'>legal notice</p>
+          <Link to='/privacy' className='text-xl lg:text-sm font-medium opacity-70 hover:opacity-100 transition'>privacy policy</Link>
+          <Link to='/terms' className='text-xl lg:text-sm font-medium opacity-70 hover:opacity-100 transition'>terms</Link>
+          <Link to='/legal' className='text-xl lg:text-sm font-medium opacity-70 hover:opacity-100 transition'>legal notice</Link>
         </div>
       </div>
     </div>
