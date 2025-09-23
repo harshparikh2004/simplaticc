@@ -7,6 +7,9 @@ import Loader from './components/Loader'
 const Navbar = React.lazy(() => import('./components/Navbar'))
 const Footer = React.lazy(() => import('./components/Footer'))
 const Home = React.lazy(() => import('./pages/Home'))
+const About = React.lazy(() => import('./pages/About'))
+const Services = React.lazy(() => import('./pages/Services'))
+const Contact = React.lazy(() => import('./pages/Contact'))
 const Login = React.lazy(() => import('./pages/Login'))
 const Profile = React.lazy(() => import('./pages/Profile'))
 const NewProject = React.lazy(() => import('./pages/NewProject'))
@@ -41,6 +44,9 @@ const RouteHandler = () => {
       ) : (
         <Routes>
           <Route path='/' element={<Home />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/services' element={<Services />} />
+          <Route path='/contact' element={<Contact />} />
           <Route path='/login' element={<Login />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/new-project' element={<NewProject />} />
