@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+html {
+    background-color: rgba(229, 231, 235, 0.9);
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/src/assets/fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Syne';
+    src: url('/src/assets/fonts/Syne/Syne-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Oswald';
+    src: url('/src/assets/fonts/Oswald/Oswald-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'CaviarDreams';
+    src: url('/src/assets/fonts/caviar_dreams/CaviarDreams.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Dastin';
+    src: url('/src/assets/fonts/dastin/Dastin.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Adam';
+    src: url('/src/assets/fonts/adam/Adam-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    src: url('/src/assets/fonts/quicksand/Quicksand_Book.otf') format('truetype');
+}
+
+@layer utilities {
+    @keyframes blobMove1 {
+
+        0%,
+        100% {
+            transform: translate(-50%, -50%) translateX(0px) translateY(0px);
+        }
+
+        50% {
+            transform: translate(-50%, -50%) translateX(30px) translateY(-20px);
+            transform: scale(1.05);
+            opacity: 0.8;
+
+        }
+    }
+
+    @keyframes blobMove2 {
+
+        0%,
+        100% {
+            transform: translate(-50%, -50%) translateX(0px) translateY(0px);
+        }
+
+        50% {
+            transform: translate(-50%, -50%) translateX(-20px) translateY(30px);
+            transform: scale(1.05);
+            opacity: 0.8;
+
+        }
+    }
+
+    @keyframes blobMove3 {
+
+        0%,
+        100% {
+            transform: translate(-50%, -50%) translateX(0px) translateY(0px);
+        }
+
+        50% {
+            transform: translate(-50%, -50%) translateX(20px) translateY(-25px);
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+    }
+
+    .animate-blob-1 {
+        animation: blobMove1 8s ease-in-out infinite;
+    }
+
+    .animate-blob-2 {
+        animation: blobMove2 10s ease-in-out infinite;
+    }
+
+    .animate-blob-3 {
+        animation: blobMove3 12s ease-in-out infinite;
+    }
+}
