@@ -31,6 +31,9 @@ function Services() {
           <div key={s.title} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-semibold mb-2">{s.title}</h2>
             <p className="text-gray-600" style={{ fontFamily: 'Quicksand' }}>{s.desc}</p>
+            {s.title === 'SRS Generation' && (
+              <a href="/analyze-repo" className="inline-block mt-3 px-4 py-2 rounded-lg bg-[#303030] text-white hover:rounded-xl transition-all">Analyze GitHub Repo</a>
+            )}
           </div>
         ))}
       </div>
