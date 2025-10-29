@@ -1,27 +1,40 @@
-import { genAI } from './geminiClient'
+export async function generateSRSFromRepo(contextChunks) {
+  const MODEL = 'mistral:7b-instruct';
+  const chunkLimit = 3000;
 
-export function buildRepoContext({ meta, languages, files }) {
-  const langSummary = languages ? Object.entries(languages).map(([k,v]) => `${k}:${v}`).join(', ') : 'unknown'
-  const fileList = files.map(f => `- ${f.path} (${f.content.length} chars)`).join('\n')
-  const trimmedFiles = files.map(f => `FILE: ${f.path}\n\n${truncate(f.content, 4000)}`).join('\n\n---\n\n')
-  return `Repository: ${meta.full_name}\nDescription: ${meta.description || 'N/A'}\nDefault branch: ${meta.default_branch}\nLanguages: ${langSummary}\n\nImportant files:\n${fileList}\n\nContents (truncated):\n${trimmedFiles}`
-}
+  // If contextChunks is a long string, split it
+  const chunks = [];
+  for (let i = 0; i < contextChunks.length; i += chunkLimit) {
+    chunks.push(contextChunks.slice(i, i + chunkLimit));
+  }
 
-function truncate(str, max) {
-  if (!str) return ''
-  return str.length > max ? str.slice(0, max) + `\n... [truncated ${str.length - max} chars]` : str
-}
+  console.log(`🧾 Generating partial SRS sections (${chunks.length} parts)...`);
 
-export async function generateTestCasesFromRepo(context) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' })
-  const prompt = `You are a senior QA engineer and language-aware test author. Analyze the repository context below and produce:\n\n1) A high-level test plan organized by components/modules and user flows.\n2) A prioritized list of edge cases and negative tests.\n3) Concrete unit test cases with inputs/outputs for critical functions.\n4) Integration/e2e scenarios.\n5) Example test snippets in the dominant language and likely framework (e.g., Jest for JS/TS, PyTest for Python, JUnit for Java, Go test, RSpec, etc.).\n\nGuidelines:\n- Use clear headings and bullet points.\n- When providing sample tests, include runnable code blocks in the detected language.\n- Map test cases to files/functions when you can infer them.\n- Consider configuration, API interactions, and async flows.\n\nContext:\n${context}`
-  const res = await model.generateContent(prompt)
-  return res.response.text()
-}
+  const partialSRS = [];
 
-export async function generateSRSFromRepo(context) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' })
-  const prompt = `You are an IEEE SRS expert. Using ONLY the repository context below, derive a comprehensive SRS in Markdown. Infer goals, actors, features, APIs, data models, constraints, and non-functional requirements from code, README, configs, and routes. Be explicit, structured, and avoid placeholders.\n\nContext:\n${context}`
-  const res = await model.generateContent(prompt)
-  return res.response.text()
+  for (const [i, chunk] of chunks.entries()) {
+    const prompt = `
+You are an expert software analyst. Generate the SRS Section for this part of the project context.
+Focus on:
+- Functional & Non-functional requirements
+- Key modules and interactions
+- Design assumptions
+
+Part ${i + 1} Context:
+${chunk}
+`;
+    const result = await callOllama(MODEL, prompt);
+    partialSRS.push(`\n\n## Part ${i + 1} SRS\n${result}`);
+  }
+
+  // Combine partial SRS sections into final summarized SRS
+  const mergePrompt = `
+Combine the following partial SRS sections into a single, cohesive IEEE-style Software Requirements Specification document.
+
+${partialSRS.join('\n')}
+`;
+
+  console.log("🧩 Merging partial SRS sections...");
+  const finalSRS = await callOllama(MODEL, mergePrompt);
+  return finalSRS;
 }
