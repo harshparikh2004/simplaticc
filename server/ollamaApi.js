@@ -6,7 +6,7 @@ export async function streamOllama(prompt, res) {
         const response = await axios({
             method: "post",
             url: "http://localhost:11434/api/generate",
-            data: { model: "mistral:7b-instruct", prompt, stream: true },
+            data: { model: "phi3:mini", prompt, stream: true },
             responseType: "stream",
         });
 

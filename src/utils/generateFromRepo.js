@@ -1,5 +1,5 @@
 export async function generateSRSFromRepo(contextChunks) {
-  const MODEL = 'mistral:7b-instruct';
+  const MODEL = 'phi3:mini';
   const chunkLimit = 3000;
 
   // If contextChunks is a long string, split it
@@ -14,14 +14,16 @@ export async function generateSRSFromRepo(contextChunks) {
 
   for (const [i, chunk] of chunks.entries()) {
     const prompt = `
-You are an expert software analyst. Generate the SRS Section for this part of the project context.
-Focus on:
-- Functional & Non-functional requirements
-- Key modules and interactions
-- Design assumptions
+You are a professional software analyst. Analyze the following **source code chunk**
+from a larger GitHub project. Summarize only what can be inferred from this chunk:
+- What functionality does this code implement?
+- Which files or components are involved?
+- Any UI, API, or logic hints?
 
-Part ${i + 1} Context:
-${chunk}
+Avoid assumptions beyond this chunk. Focus on clear, factual description.
+
+### Code Chunk:
+${context}
 `;
     const result = await callOllama(MODEL, prompt);
     partialSRS.push(`\n\n## Part ${i + 1} SRS\n${result}`);

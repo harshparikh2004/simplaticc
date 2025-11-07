@@ -1,25 +1,38 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import '../index.css'
 import {
   parseRepoUrl,
   fetchRepoMeta,
   fetchRepoLanguages,
   fetchRepoTree,
-  fetchFileText,
   selectInterestingFiles
 } from '../utils/github'
 import toast, { Toaster } from 'react-hot-toast'
+import LoaderOverlay from '../components/LoaderOverlay'
 
 export default function AnalyzeRepo() {
   const [repoUrl, setRepoUrl] = useState('')
   const [token, setToken] = useState('')
   const [loading, setLoading] = useState(false)
+  const [streaming, setStreaming] = useState(false)
   const [output, setOutput] = useState('')
+  const [estimatedTime, setEstimatedTime] = useState(0)
+  const [remainingTime, setRemainingTime] = useState(0)
+
+  useEffect(() => {
+    if (loading && remainingTime > 0) {
+      const interval = setInterval(() => setRemainingTime(t => Math.max(t - 1, 0)), 1000)
+      return () => clearInterval(interval)
+    }
+  }, [loading, remainingTime])
 
   const run = async () => {
     try {
       setLoading(true)
       setOutput('')
+      setStreaming(false)
+      setEstimatedTime(0)
+      setRemainingTime(0)
 
       const { owner, repo } = parseRepoUrl(repoUrl)
       const meta = await fetchRepoMeta(owner, repo, token || undefined)
@@ -27,50 +40,63 @@ export default function AnalyzeRepo() {
       const tree = await fetchRepoTree(owner, repo, meta.default_branch, token || undefined)
       const paths = selectInterestingFiles(tree, 28, 150_000)
 
-      const files = []
-      for (const p of paths) {
-        try {
-          const content = await fetchFileText(owner, repo, meta.default_branch, p, token || undefined)
-          files.push({ name: p, content })
-        } catch (e) {
-          console.warn('Skipping file:', p, e?.message)
-        }
-      }
+      if (paths.length === 0) throw new Error('No files found in repo.')
 
-      if (files.length === 0) throw new Error('No readable files found in repo.')
+      // ✅ Estimate time based on file count
+      const estimatedSeconds = Math.ceil(paths.length * 0.3)
+      setEstimatedTime(estimatedSeconds)
+      setRemainingTime(estimatedSeconds)
 
-      // ✅ Stream response from backend
+      // Prepare payload
+      const fileList = paths.map((p) => ({
+        name: p,
+        extension: p.split('.').pop(),
+        folder: p.includes('/') ? p.split('/').slice(0, -1).join('/') : '',
+      }))
+
+      // Delay to let countdown start visually
+      await new Promise((r) => setTimeout(r, 700))
+
+      // ✅ Switch to streaming phase
+      setLoading(false)
+      setStreaming(true)
+
       const response = await fetch('http://localhost:5000/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ files })
+        body: JSON.stringify({
+          repoName: repo,
+          owner,
+          fileList,
+          languages,
+          defaultBranch: meta.default_branch,
+        }),
       })
 
       if (!response.ok) throw new Error('Backend failed to process request')
 
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
-      let text = ''
 
       while (true) {
         const { done, value } = await reader.read()
         if (done) break
         const chunk = decoder.decode(value, { stream: true })
-        text += chunk
-        setOutput(prev => prev + chunk) // live update
+        setOutput(prev => prev + chunk)
       }
 
+      setStreaming(false)
       toast.success('Repository analysis complete ✅')
     } catch (err) {
       console.error(err)
       toast.error(err.message || 'Failed to analyze repository')
-    } finally {
       setLoading(false)
+      setStreaming(false)
     }
   }
 
   return (
-    <main className="lg:max-w-[1100px] w-full mx-auto mt-40 px-6 pb-24">
+    <main className="relative lg:max-w-[1100px] w-full mx-auto mt-40 px-6 pb-24">
       <Toaster />
       <h1 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: 'Syne' }}>
         Analyze GitHub Repository
@@ -81,27 +107,27 @@ export default function AnalyzeRepo() {
         We’ll fetch and sample the codebase to generate structured documentation using your local Ollama model.
       </p>
 
-      <div className="space-y-3 bg-white border rounded-xl p-4 shadow-sm">
+      <div className="space-y-3 bg-white border rounded-xl p-4 shadow-sm relative">
         <input
           className="w-full border rounded-lg p-2"
           placeholder="https://github.com/owner/repo"
           value={repoUrl}
           onChange={(e) => setRepoUrl(e.target.value)}
-          disabled={loading}
+          disabled={loading || streaming}
         />
         <input
           className="w-full border rounded-lg p-2"
           placeholder="Optional: GitHub token (scopes: public_repo)"
           value={token}
           onChange={(e) => setToken(e.target.value)}
-          disabled={loading}
+          disabled={loading || streaming}
         />
         <button
           onClick={run}
-          disabled={loading || !repoUrl}
+          disabled={loading || streaming || !repoUrl}
           className="px-5 py-2 rounded-lg bg-[#303030] text-white hover:rounded-xl transition-all"
         >
-          {loading ? 'Analyzing...' : 'Analyze Repository'}
+          {loading ? 'Preparing...' : streaming ? 'Analyzing...' : 'Analyze Repository'}
         </button>
       </div>
 
@@ -118,6 +144,17 @@ export default function AnalyzeRepo() {
         Note: Make sure your <code>Ollama</code> server and Node backend
         (<code>http://localhost:5000</code>) are running before analysis.
       </p>
+
+      {/* ✅ Loader active only during setup, with countdown */}
+      <LoaderOverlay
+        isActive={loading}
+        title="Analyzing your GitHub Repository..."
+        subtitle={`Estimated time: ${remainingTime > 0
+          ? `${remainingTime}s remaining`
+          : estimatedTime
+            ? 'Finalizing setup...'
+            : 'Preparing repository structure...'}`}
+      />
     </main>
   )
 }
