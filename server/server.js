@@ -1,7 +1,10 @@
+require("dotenv").config();
+const { GoogleGenerativeAI } = require("@google/generative-ai"); // ✅ move to top for clarity
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
-const { streamOllama } = require("./ollamaApi");
+const { streamOllama } = require("./ollamaApi");// ✅ ensures GEMINI_KEY is loaded from .env if present
+
 
 const app = express();
 
@@ -28,7 +31,7 @@ async function callOllama(prompt, attempt = 1) {
   try {
     const response = await withTimeout(
       axios.post("http://localhost:11434/api/generate", {
-        model: "phi3:mini",
+        model: "gemma2:27b",
         prompt,
       }),
       90000,
@@ -44,13 +47,12 @@ async function callOllama(prompt, attempt = 1) {
   }
 }
 
-// ✅ New optimized analyze endpoint
+// ✅ Existing Ollama-based SRS generation
 app.post("/analyze", async (req, res) => {
   try {
     const { repoName, owner, defaultBranch, languages, readme, fileList } = req.body;
     if (!fileList?.length) return res.status(400).send("No file list provided.");
 
-    // Build a readable structure summary
     const structureText = fileList
       .map(
         (f) =>
@@ -58,7 +60,6 @@ app.post("/analyze", async (req, res) => {
       )
       .join("\n");
 
-    // 🔹 Build the intelligent prompt
     const prompt = `You are an expert senior software analyst, technical writer, and documentation engineer with deep experience producing formal SRS documents for academic and enterprise delivery. Using ONLY the repository metadata and structure provided below, generate a complete, professional, and **IEEE 830-1998 compliant Software Requirements Specification (SRS)** document that is ready to paste into Microsoft Word or Google Docs.
 
 IMPORTANT INSTRUCTIONS (must be followed exactly):
@@ -173,13 +174,60 @@ Start the document now and output only the final SRS in Markdown.
 `;
 
     console.log("📂 Repo structure received:", fileList.length, "files");
-
     res.setHeader("Content-Type", "text/plain; charset=utf-8");
 
-    // Stream response from Ollama to frontend
     await streamOllama(prompt, res);
   } catch (err) {
     console.error("Error during analysis:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 🧠 Online Gemini SRS generation endpoint
+app.post("/generateSRSOnline", async (req, res) => {
+  try {
+    const {
+      repoOwner,
+      repoName,
+      authToken,
+      projectTitle,
+      projectDescription,
+      techStack,
+      diagramTypes,
+    } = req.body;
+
+    console.log(`⚡ Gemini request received for repo: ${repoOwner}/${repoName}`);
+
+    const genAI = new GoogleGenerativeAI({ apiKey: process.env.GEMINI_KEY });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    const prompt = `
+You are a senior software architect and IEEE documentation expert. Generate a comprehensive, detailed, and production-grade Software Requirements Specification (SRS) document in full compliance with the IEEE 830-1998 standard.
+
+This SRS is to be written in a formal, technical, and professional tone and must be suitable for academic, enterprise, or government submission. The content should be highly structured, detailed, and elaborate — long enough to span at least 16–18 pages when properly formatted in Word or PDF (11–12 pt font, 1.5 spacing).
+
+Project Title: ${projectTitle}
+Project Description: ${projectDescription}
+Technology Stack: ${techStack}
+Required Diagrams: ${diagramTypes.join(", ")}
+
+Important Formatting Instruction:
+- Output must be in **pure Markdown format**, but **NOT enclosed in any code block fences (no triple backticks)**.
+- Use proper #, ##, and ### headings so that Google Docs or Word automatically detect heading styles.
+- Only use code blocks (like \`\`\`mermaid\`\`\`) for diagrams, not for the entire document.
+
+Follow the full IEEE 830-1998 standard structure with all required sections (Introduction, Overall Description, System Features, External Interface Requirements, Non-Functional Requirements, Additional Requirements, Appendices).
+Include detailed system features, 5–6 non-functional requirement categories, and at least one Mermaid diagram per diagram type.
+
+Begin generating the final SRS document now.
+`;
+
+    const result = await model.generateContent(prompt);
+
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json({ srs: result.response.text() });
+  } catch (err) {
+    console.error("❌ Error generating SRS (Gemini):", err);
     res.status(500).json({ error: err.message });
   }
 });

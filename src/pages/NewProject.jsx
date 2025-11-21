@@ -11,7 +11,6 @@ const steps = [
     { name: 'Project Name', placeholder: 'Enter Project Name', key: 'projectTitle', type: 'text' },
     { name: 'Project Description', placeholder: 'Enter Project Description', key: 'projectDescription', type: 'text' },
     { name: 'Tech Stack', placeholder: 'Enter Tech Stack (e.g., React, Node.js)', key: 'techStack', type: 'text' },
-    { name: 'Diagram Types', placeholder: 'Enter diagram types (comma-separated)', key: 'diagramTypes', type: 'text' },
 ];
 
 function NewProject() {

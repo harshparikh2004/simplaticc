@@ -193,13 +193,25 @@ function RecentActivity() {
                             Latest updates on your projects
                         </p>
                     </div>
-                    <Link
-                        style={{ fontFamily: 'Quicksand' }}
-                        to="/new-project"
-                        className="border border-[#303030] cursor-pointer py-2 px-4 gap-1 items-center justify-center group bg-[#303030] rounded-md hover:rounded-xl transition-all duration-150 text-white text-sm sm:text-base"
-                    >
-                        Create Project
-                    </Link>
+                    <div className="flex border items-center gap-2">
+                        <button>
+                            Hello World
+                        </button>
+                        <Link
+                            style={{ fontFamily: 'Quicksand' }}
+                            to="/analyze-repo"
+                            className="border border-[#303030] cursor-pointer py-2 px-4 gap-1 items-center justify-center group bg-[#303030] rounded-md hover:rounded-xl transition-all duration-150 text-white text-sm sm:text-base"
+                        >
+                            Analyze GitHub Repo
+                        </Link>
+                        <Link
+                            style={{ fontFamily: 'Quicksand' }}
+                            to="/new-project"
+                            className="border border-[#303030] cursor-pointer py-2 px-4 gap-1 items-center justify-center group bg-[#303030] rounded-md hover:rounded-xl transition-all duration-150 text-white text-sm sm:text-base"
+                        >
+                            Create Project
+                        </Link>
+                    </div>
                 </div>
                 <div className="flex-1 flex items-center justify-center">
                     <div className="text-center">

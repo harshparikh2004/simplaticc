@@ -7,8 +7,10 @@
         "start": "node server.js"
     },
     "dependencies": {
+        "@google/generative-ai": "^0.24.1",
         "axios": "^1.7.3",
         "cors": "^2.8.5",
+        "dotenv": "^17.2.3",
         "event-stream": "^4.0.1",
         "express": "^4.19.2",
         "js-tiktoken": "^1.0.10"

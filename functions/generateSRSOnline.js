@@ -1,25 +1,28 @@
-import { genAI } from './geminiClient';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { fetchGitHubContext } from "./githubContext.js";
 
-export const generateSRS = async (projectData) => {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+const genAI = new GoogleGenerativeAI({ apiKey: process.env.GEMINI_KEY });
 
-    const {
-        projectTitle = 'Untitled Project',
-        projectDescription = 'No description provided.',
-        techStack = 'Not specified',
-        diagramTypes = [],
-    } = projectData;
+export const generateSRSOnline = async (req, res) => {
+    const { repoOwner, repoName, authToken, projectTitle, projectDescription, techStack, diagramTypes } = req.body;
 
-    // Original prompt preserved — only added one small formatting clause
-    const prompt = `
+    try {
+        // Step 1: Fetch lightweight metadata from GitHub
+        const repoData = await fetchGitHubContext(repoOwner, repoName, authToken);
+
+        // Step 2: Define the enhanced formal SRS prompt
+        const prompt = `
 You are a senior software architect and IEEE documentation expert. Generate a comprehensive, detailed, and production-grade Software Requirements Specification (SRS) document in full compliance with the IEEE 830-1998 standard.
 
-This SRS is to be written in a formal, technical, and professional tone and must be suitable for academic, enterprise, or government submission. The content should be highly structured, detailed, and elaborate — long enough to span at least 16–18 pages when properly formatted in Word or PDF (11–12 pt font, 1.5 spacing). There should be no time or date mentioned when it was created or generated. There should not be other unnecessary meta information.
+This SRS is to be written in a formal, technical, and professional tone and must be suitable for academic, enterprise, or government submission. The content should be highly structured, detailed, and elaborate — long enough to span at least 16–18 pages when properly formatted in Word or PDF (11–12 pt font, 1.5 spacing).
 
 Project Title: ${projectTitle}
 Project Description: ${projectDescription}
 Technology Stack: ${techStack}
 Required Diagrams: ${diagramTypes.join(', ')}
+
+Repository Context Summary (for AI reference only):
+${JSON.stringify(repoData, null, 2)}
 
 Important Formatting Instruction:
 - Output must be in **pure Markdown format**, but **NOT enclosed in any code block fences (no triple backticks)**.
@@ -33,8 +36,10 @@ Follow the full IEEE 830-1998 standard structure and elaborate extensively in ea
 Section 1. Introduction
 
 1.1 Purpose — Explain the full scope and objective of the document
-1.2 Project Scope — Define system boundaries, features, goals, benefits, out-of-scope features
-1.3 References — Include standards, APIs, frameworks, academic papers, and system dependencies
+1.2 Document Conventions — Describe all formatting, naming, references, and units conventions
+1.3 Intended Audience and Reading Suggestions — List primary and secondary stakeholders and their reading path
+1.4 Project Scope — Define system boundaries, features, goals, benefits, out-of-scope features
+1.5 References — Include standards, APIs, frameworks, academic papers, and system dependencies
 
 Section 2. Overall Description
 
@@ -82,9 +87,21 @@ Section 7. Appendices
 - Appendix C: Future Work / Enhancements
 - Appendix D: Change History Table
 
+Diagrams (Embedded via Mermaid or PlantUML code blocks)
+Include at least one high-quality, accurate diagram of each type where applicable:
+
+- Use Case Diagram
+- Entity Relationship Diagram (ERD)
+- Data Flow Diagram (DFD) (Context, Level 1)
+- Class Diagram
+- Activity Diagram
+- Sequence Diagram (optional)
+
+Include code blocks using mermaid or plantuml with appropriate indentation
+
 Markdown Formatting
 
-- Use semantic headings with #, ##, and ###
+- Use semantic headings with #, ##, and ### 
 - Use bold, italics, bullet points, numbered lists, and tables as needed
 - Use code blocks for all diagrams and example structures
 - Ensure content renders well in Markdown viewers and HTML
@@ -97,22 +114,15 @@ Writing Instructions
 - Ensure consistency, clarity, completeness, and modularity
 
 Begin generating the SRS document now based on the provided project details.
-`.trim();
+`;
 
-    try {
+        // Step 3: Generate the document via Gemini
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
         const result = await model.generateContent(prompt);
-        const response = await result.response;
-        let text = await response.text();
 
-        // ✅ Strip any accidental Markdown code fences Gemini might add
-        text = text
-            .replace(/```(markdown)?/gi, '') // removes ```markdown or similar
-            .replace(/```/g, '') // removes plain triple backticks
-            .trim();
-
-        return text;
-    } catch (err) {
-        console.error('Gemini API Error:', err);
-        throw new Error('Failed to generate SRS document.');
+        // Step 4: Respond with raw SRS text
+        res.json({ srs: result.response.text() });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };

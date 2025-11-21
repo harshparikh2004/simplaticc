@@ -2,7 +2,7 @@ import Sidebar from '../components/Sidebar';
 import React from 'react';
 import AvatarGenerator from '../components/AvatarGenerator';
 import { FaEnvelope } from 'react-icons/fa';
-import {db, auth } from '../firebase';
+import { db, auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
@@ -14,23 +14,32 @@ const Profile = () => {
   const [projectStats, setProjectStats] = useState({
     total: 0,
     completed: 0,
-    inProgress: 0,
     failed: 0,
+    pending: 0,
   });
 
   useEffect(() => {
     const fetchProjects = async () => {
       const user = auth.currentUser;
-      const q = query(collection(db, "projects"), where("userId", "==", user.uid));
+      if (!user) return;
+
+      const q = query(collection(db, "projects"), where("createdByUid", "==", user.uid));
       const snapshot = await getDocs(q);
 
-      const stats = { total: 0, completed: 0, inProgress: 0, failed: 0 };
+      const stats = {
+        total: 0,
+        completed: 0,
+        failed: 0,
+        pending: 0,
+      };
 
       snapshot.forEach((doc) => {
         stats.total++;
         const status = doc.data().status?.toLowerCase();
+
         if (status === "completed") stats.completed++;
         else if (status === "failed") stats.failed++;
+        else stats.pending++; // dynamic for pending / in-progress / undefined
       });
 
       setProjectStats(stats);
@@ -97,11 +106,12 @@ const Profile = () => {
               </div>
 
               {/* Stats Summary */}
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
                 {[
                   { label: 'Total Projects', value: projectStats.total, color: 'bg-blue-400' },
                   { label: 'Completed', value: projectStats.completed, color: 'bg-green-400' },
                   { label: 'Failed', value: projectStats.failed, color: 'bg-red-400' },
+                  { label: 'Pending', value: projectStats.pending, color: 'bg-yellow-400' },
                 ].map((stat, index) => (
                   <div
                     key={index}

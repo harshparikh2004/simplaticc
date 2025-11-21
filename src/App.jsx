@@ -91,7 +91,7 @@ const RouteHandler = () => {
           <Route path='/legal' element={<Legal />} />
           <Route path="/test-firebase" element={<TestFirebase />} />
           <Route path="/projects" element={<Projects />} />
-          <Route path="/srs/:projectId" element={<ViewSRS />} />
+          <Route path="/srs/:projectId" element={<ViewSRS />} /> 
         </Routes>
       )}
     </Suspense>

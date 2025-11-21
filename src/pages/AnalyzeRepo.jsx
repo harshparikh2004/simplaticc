@@ -16,6 +16,7 @@ export default function AnalyzeRepo() {
   const [loading, setLoading] = useState(false)
   const [streaming, setStreaming] = useState(false)
   const [output, setOutput] = useState('')
+  const [geminiOutput, setGeminiOutput] = useState('') // 🧠 NEW: Gemini-generated SRS
   const [estimatedTime, setEstimatedTime] = useState(0)
   const [remainingTime, setRemainingTime] = useState(0)
 
@@ -26,6 +27,7 @@ export default function AnalyzeRepo() {
     }
   }, [loading, remainingTime])
 
+  // 🧠 Existing offline Ollama workflow (unchanged)
   const run = async () => {
     try {
       setLoading(true)
@@ -42,22 +44,11 @@ export default function AnalyzeRepo() {
 
       if (paths.length === 0) throw new Error('No files found in repo.')
 
-      // ✅ Estimate time based on file count
       const estimatedSeconds = Math.ceil(paths.length * 0.3)
       setEstimatedTime(estimatedSeconds)
       setRemainingTime(estimatedSeconds)
-
-      // Prepare payload
-      const fileList = paths.map((p) => ({
-        name: p,
-        extension: p.split('.').pop(),
-        folder: p.includes('/') ? p.split('/').slice(0, -1).join('/') : '',
-      }))
-
-      // Delay to let countdown start visually
       await new Promise((r) => setTimeout(r, 700))
 
-      // ✅ Switch to streaming phase
       setLoading(false)
       setStreaming(true)
 
@@ -67,7 +58,11 @@ export default function AnalyzeRepo() {
         body: JSON.stringify({
           repoName: repo,
           owner,
-          fileList,
+          fileList: paths.map((p) => ({
+            name: p,
+            extension: p.split('.').pop(),
+            folder: p.includes('/') ? p.split('/').slice(0, -1).join('/') : '',
+          })),
           languages,
           defaultBranch: meta.default_branch,
         }),
@@ -95,6 +90,40 @@ export default function AnalyzeRepo() {
     }
   }
 
+  // 🧩 NEW: Online Gemini SRS generation
+  const generateGeminiSRS = async () => {
+    try {
+      if (!repoUrl) return toast.error('Enter a valid GitHub repository URL first.')
+
+      const { owner, repo } = parseRepoUrl(repoUrl)
+      toast.loading('Fetching repository context...', { id: 'gemini' })
+
+      const response = await fetch('http://localhost:5000/generateSRSOnline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          repoOwner: owner,
+          repoName: repo,
+          authToken: token || null,
+          projectTitle: repo,
+          projectDescription: `Automatically generated SRS for the repository ${repo}.`,
+          techStack: 'Auto-detected from repository metadata',
+          diagramTypes: ['Use Case', 'ERD', 'DFD', 'Class Diagram', 'Activity Diagram']
+        })
+      })
+
+      toast.dismiss('gemini')
+      if (!response.ok) throw new Error('Gemini API request failed.')
+
+      const data = await response.json()
+      setGeminiOutput(data.srs)
+      toast.success('Gemini SRS generated successfully ✅')
+    } catch (err) {
+      console.error(err)
+      toast.error(err.message || 'Failed to generate SRS via Gemini')
+    }
+  }
+
   return (
     <main className="relative lg:max-w-[1100px] w-full mx-auto mt-40 px-6 pb-24">
       <Toaster />
@@ -103,8 +132,8 @@ export default function AnalyzeRepo() {
       </h1>
 
       <p className="text-gray-700 mb-6" style={{ fontFamily: 'Quicksand' }}>
-        Enter a GitHub repository URL. Optionally add a GitHub token to increase rate limits.
-        We’ll fetch and sample the codebase to generate structured documentation using your local Ollama model.
+        Enter a GitHub repository URL. Add a GitHub token to increase rate limits.
+        You can analyze the repo locally (Ollama) or generate a formal IEEE 830 SRS using Gemini online.
       </p>
 
       <div className="space-y-3 bg-white border rounded-xl p-4 shadow-sm relative">
@@ -117,35 +146,53 @@ export default function AnalyzeRepo() {
         />
         <input
           className="w-full border rounded-lg p-2"
-          placeholder="Optional: GitHub token (scopes: public_repo)"
+          placeholder="GitHub token (scopes: public_repo)"
           value={token}
           onChange={(e) => setToken(e.target.value)}
           disabled={loading || streaming}
         />
-        <button
-          onClick={run}
-          disabled={loading || streaming || !repoUrl}
-          className="px-5 py-2 rounded-lg bg-[#303030] text-white hover:rounded-xl transition-all"
-        >
-          {loading ? 'Preparing...' : streaming ? 'Analyzing...' : 'Analyze Repository'}
-        </button>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <button
+            onClick={run}
+            disabled={loading || streaming || !repoUrl}
+            className="flex-1 px-5 py-2 rounded-lg bg-[#303030] text-white hover:rounded-xl transition-all"
+          >
+            {loading ? 'Preparing...' : streaming ? 'Analyzing...' : 'Analyze Repository (Offline)'}
+          </button>
+
+          {/* 🧠 NEW BUTTON for Gemini */}
+          <button
+            onClick={generateGeminiSRS}
+            disabled={loading || streaming || !repoUrl}
+            className="flex-1 px-5 py-2 rounded-lg bg-[#0b5ed7] text-white hover:rounded-xl transition-all"
+          >
+            Generate SRS (Online Gemini)
+          </button>
+        </div>
       </div>
+
+      <p className="text-gray-500 text-sm mt-8" style={{ fontFamily: 'Quicksand' }}>
+        *You can generate the GitHub token from your GitHub account settings under Developer Settings in Personal Access Tokens.
+      </p>
 
       {output && (
         <section className="border rounded-xl bg-white p-4 shadow-sm mt-8">
-          <h2 className="text-xl font-semibold mb-2">AI Output</h2>
+          <h2 className="text-xl font-semibold mb-2">Offline Model Output (Ollama)</h2>
           <div className="prose max-w-none whitespace-pre-wrap text-sm overflow-auto max-h-[70vh]">
             {output}
           </div>
         </section>
       )}
 
-      <p className="text-xs text-gray-500 mt-4">
-        Note: Make sure your <code>Ollama</code> server and Node backend
-        (<code>http://localhost:5000</code>) are running before analysis.
-      </p>
+      {geminiOutput && (
+        <section className="border rounded-xl bg-white p-4 shadow-sm mt-8">
+          <h2 className="text-xl font-semibold mb-2">Online Gemini SRS Output</h2>
+          <div className="prose max-w-none whitespace-pre-wrap text-sm overflow-auto max-h-[70vh]">
+            {geminiOutput}
+          </div>
+        </section>
+      )}
 
-      {/* ✅ Loader active only during setup, with countdown */}
       <LoaderOverlay
         isActive={loading}
         title="Analyzing your GitHub Repository..."
@@ -158,3 +205,5 @@ export default function AnalyzeRepo() {
     </main>
   )
 }
+
+
