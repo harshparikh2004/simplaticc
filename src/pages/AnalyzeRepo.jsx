@@ -160,14 +160,14 @@ export default function AnalyzeRepo() {
             {loading ? 'Preparing...' : streaming ? 'Analyzing...' : 'Analyze Repository (Offline)'}
           </button>
 
-          {/* 🧠 NEW BUTTON for Gemini */}
+          {/* 🧠 NEW BUTTON for Gemini
           <button
             onClick={generateGeminiSRS}
             disabled={loading || streaming || !repoUrl}
             className="flex-1 px-5 py-2 rounded-lg bg-[#0b5ed7] text-white hover:rounded-xl transition-all"
           >
             Generate SRS (Online Gemini)
-          </button>
+          </button> */}
         </div>
       </div>
 
