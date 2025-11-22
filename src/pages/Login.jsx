@@ -25,7 +25,7 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (isSignup && password !== confirmPassword) {
             toast.error('Passwords do not match.', {
                 position: 'top-center',
@@ -68,41 +68,27 @@ function Login() {
 
     const handleGoogleLogin = async () => {
         try {
-            // Add Google Docs API scopes to the provider
-            googleProvider.addScope('https://www.googleapis.com/auth/documents');
-            googleProvider.addScope('https://www.googleapis.com/auth/drive.file');
-            
-            const result = await signInWithPopup(auth, googleProvider);
-            
-            // Get the access token for Google APIs
+            const provider = new GoogleAuthProvider();
+            provider.addScope("https://www.googleapis.com/auth/documents");
+            provider.addScope("https://www.googleapis.com/auth/drive");
+            provider.addScope("https://www.googleapis.com/auth/drive.file");
+
+            const result = await signInWithPopup(auth, provider);
+
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const accessToken = credential?.accessToken;
-            
-            // Store the access token for Google Docs API usage
+
             if (accessToken) {
-                localStorage.setItem('google_access_token', accessToken);
-                toast.success('Google login successful with Docs access!', {
-                    position: 'top-center',
-                    duration: 1300,
-                });
-            } else {
-                toast.success('Google login successful.', {
-                    position: 'top-center',
-                    duration: 1300,
-                });
+                localStorage.setItem("google_access_token", accessToken);
+                toast.success("Google login successful with Docs access!");
             }
-            
+
             await createUserDocument(result.user);
-            
-            setTimeout(() => {
-                navigate('/');
-            }, 1700);
+
+            setTimeout(() => navigate("/"), 1200);
         } catch (err) {
-            console.error('Google login error:', err);
-            toast.error('Google login failed.', {
-                position: 'top-center',
-                duration: 1300,
-            });
+            console.error("Google login error:", err);
+            toast.error("Google login failed.");
         }
     };
 

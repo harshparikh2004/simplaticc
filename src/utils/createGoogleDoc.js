@@ -1,48 +1,51 @@
-// No Firebase imports needed for this function
-
-export const createGoogleDoc = async (accessToken, title = "Simplatic SRS Document", content = "Welcome to your SRS!") => {
+export async function createGoogleDoc(accessToken, title, content) {
     try {
-        // 1. Create the document
-        const createResponse = await fetch("https://docs.googleapis.com/v1/documents", {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ title }),
-        });
+        // Step 1: Create empty doc
+        const createResponse = await fetch(
+            "https://docs.googleapis.com/v1/documents",
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ title }),
+            }
+        );
 
         const createData = await createResponse.json();
-
-        if (!createData.documentId) {
+        if (!createResponse.ok) {
+            console.error("Create failed:", createData);
             throw new Error("Failed to create document");
         }
 
         const documentId = createData.documentId;
 
-        // 2. Insert content into the document
-        await fetch(`https://docs.googleapis.com/v1/documents/${documentId}:batchUpdate`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                requests: [
-                    {
-                        insertText: {
-                            location: { index: 1 },
-                            text: content,
-                        },
-                    },
-                ],
-            }),
-        });
+        // Step 2: Insert SRS content
+        await fetch(
+            `https://docs.googleapis.com/v1/documents/${documentId}:batchUpdate`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    requests: [
+                        {
+                            insertText: {
+                                location: { index: 1 },
+                                text: content
+                            }
+                        }
+                    ]
+                }),
+            }
+        );
 
-        // 3. Return the document link
         return `https://docs.google.com/document/d/${documentId}/edit`;
     } catch (err) {
-        console.error("Error creating Google Doc:", err);
-        throw err;
+        console.error("createGoogleDoc error:", err);
+        return null;
     }
-};
+}

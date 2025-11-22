@@ -6,7 +6,6 @@ import { Toaster, toast } from 'react-hot-toast';
 import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
 import MermaidRenderer from '../components/MermaidRenderer';
-import { encodePlantUML } from '../utils/encodePlantUML';
 import { createRoot } from 'react-dom/client';
 import { createGoogleDoc } from '../utils/createGoogleDoc';
 
@@ -44,60 +43,51 @@ function ViewSRS() {
     }, [projectId]);
 
     const handleExportToDocs = async () => {
-        const accessToken = localStorage.getItem('google_access_token');
+        if (!srs) return toast.error("No SRS to export");
 
-        if (!accessToken) {
-            toast.error("Please log in with Google to use this feature.");
-            return;
-        }
+        const accessToken = localStorage.getItem("google_access_token");
+        if (!accessToken) return toast.error("Login with Google first");
 
-        if (!srs) {
-            toast.error("No SRS content to export.");
-            return;
-        }
+        setExporting(true);
+        const url = await createGoogleDoc(accessToken, "Simplatic SRS Document", srs);
 
-        try {
-            setExporting(true);
-            const docUrl = await createGoogleDoc(accessToken, "Simplatic SRS Document", srs);
-            window.open(docUrl, '_blank');
+        if (url) {
+            window.open(url, "_blank");
             toast.success("Document exported successfully!");
-        } catch (err) {
-            toast.error("Failed to export to Google Docs.");
-            console.error(err);
-        } finally {
-            setExporting(false);
+        } else {
+            toast.error("Export failed — token might be expired");
         }
+
+        setExporting(false);
     };
 
+
     const components = {
+        pre({ children }) {
+            return (
+                <pre className="bg-gray-900 text-white p-4 rounded-md overflow-x-auto text-sm my-4">
+                    {children}
+                </pre>
+            );
+        },
         code({ className = '', children }) {
-            const language = className.replace('language-', '').trim().toLowerCase();
+            const language = className?.replace('language-', '')?.trim()?.toLowerCase();
 
             if (language === 'mermaid') {
                 return <MermaidRenderer chart={String(children).trim()} />;
             }
 
-            if (language === 'plantuml') {
-                const encoded = encodePlantUML(children);
-                const src = `https://www.plantuml.com/plantuml/svg/~1${encoded}`;
-                return (
-                    <div className="my-4">
-                        <img src={src} alt="PlantUML Diagram" className="rounded border shadow" />
-                    </div>
-                );
-            }
-
             return (
-                <pre className="bg-gray-900 text-white p-4 rounded-md overflow-x-auto text-sm">
-                    <code>{children}</code>
-                </pre>
+                <code className="text-white">
+                    {children}
+                </code>
             );
         }
     };
 
     const handleCopy = async () => {
         if (!srs) return;
-        
+
         try {
             await navigator.clipboard.writeText(srs);
             toast.success('SRS copied to clipboard!');

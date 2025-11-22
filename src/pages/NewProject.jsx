@@ -41,7 +41,7 @@ function NewProject() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.diagramTypes || !formData.projectTitle) {
+        if (!formData.projectTitle || !formData.projectDescription || !formData.techStack) {
             toast.error('Please complete all fields before submitting.', { position: 'top-center' });
             return;
         }
@@ -59,7 +59,6 @@ function NewProject() {
                 projectTitle: formData.projectTitle.trim(),
                 projectDescription: formData.projectDescription.trim(),
                 techStack: formData.techStack.trim(),
-                diagramTypes: formData.diagramTypes.split(',').map((type) => type.trim()).filter(Boolean),
                 status: 'inprogress',
                 createdBy: currentUser.email,
                 createdByUid: currentUser.uid,
